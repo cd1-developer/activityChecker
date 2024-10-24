@@ -7,10 +7,10 @@ interface Account extends Document {
     date:string;
     accountStatus: string;  // Corrected the typo
     redRibbon: string;      // Corrected the typo
-    plannedF: number;
-    usedF: number;
-    plannedUF: number;
-    usedUF: number;
+    plannedF: string;
+    usedF: string;
+    plannedUF: string;
+    usedUF: string;
 }
 
 // Create the Mongoose schema
@@ -33,19 +33,19 @@ const accountSchema: Schema = new Schema({
         required: false
     },
     plannedF: {
-        type: Number,
+        type: String,
         required: true
     },
     usedF: {
-        type: Number,
+        type: String,
         required: true
     },
     plannedUF: {
-        type: Number,
+        type: String,
         required: true
     },
     usedUF: {
-        type: Number,
+        type: String,
         required: true
     }
 });

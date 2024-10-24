@@ -35,7 +35,7 @@ router.post("/", async (req: Request, res: Response) => {
       .status(500)
       .json({
         success: false,
-        message: "Could not able to send data to database",
+        message: `Could not able to send data to database ${e.stack}`,
       });
   }
 });
