@@ -17,11 +17,12 @@ app.use(cors({
   methods: ["GET", "POST", "PATCH", "DELETE"],
   credentials: true,
 }));
+app.use(express.json());
 // first db Should be connected properly then do other things
 connectDB()
   .then(() => {
     // expect response in json format
-    app.use(express.json());
+   
     // start using routes
     app.use("/api/postAccountData", postAccountData);
     app.use("/api/getAccountData", getAccountData);

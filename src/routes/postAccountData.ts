@@ -4,7 +4,6 @@ const router = Router();
 router.post("/", async (req: Request, res: Response) => {
   try {
     const {
-
       username,
       date,
       accountStatus,
