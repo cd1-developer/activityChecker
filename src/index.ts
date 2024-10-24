@@ -3,10 +3,20 @@ import dotenv from "dotenv";
 import connectDB from "./db/index";
 import postAccountData from "./routes/postAccountData";
 import getAccountData from "./routes/getAccountData";
+import cors from "cors"
 dotenv.config({
   path: ".env",
 });
+
+
+
 const app = express();
+// CORS configuration
+app.use(cors({
+  origin: '*', // Change to specific domains if needed
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  credentials: true,
+}));
 // first db Should be connected properly then do other things
 connectDB()
   .then(() => {
