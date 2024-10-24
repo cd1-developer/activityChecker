@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 // Define the TypeScript interface for typing
 interface Account extends Document {
-    subscriptionID: string;
+
     username: string;
     date:string;
     accountStatus: string;  // Corrected the typo
@@ -15,10 +15,7 @@ interface Account extends Document {
 
 // Create the Mongoose schema
 const accountSchema: Schema = new Schema({
-    subscriptionID: {
-        type: String,
-        required: true
-    },
+  
     username: {
         type: String,
         required: true

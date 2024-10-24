@@ -4,7 +4,7 @@ const router = Router();
 router.post("/", async (req: Request, res: Response) => {
   try {
     const {
-      subscriptionID,
+
       username,
       date,
       accountStatus,
@@ -15,7 +15,7 @@ router.post("/", async (req: Request, res: Response) => {
       usedUF,
     } = req.body;
     const newAccountData = new AccountModel({
-      subscriptionID,
+ 
       username,
       date,
       accountStatus,
