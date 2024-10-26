@@ -33,7 +33,7 @@ const accountSchema: Schema = new Schema({
       },
       redRibbon: {
         type: String,
-        required: true,
+   
       },
       plannedF: {
         type: String,
