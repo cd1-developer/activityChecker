@@ -3,7 +3,10 @@ import dotenv from "dotenv";
 import connectDB from "./db/index";
 import postAccountData from "./routes/postAccountData";
 import getAccountData from "./routes/getAccountData";
+import postTrueGrowthData from "./routes/postTrueGrowthData"
+import getTruwGrowthData from "./routes/getTrueGrowthData"
 import cors from "cors"
+
 dotenv.config({
   path: ".env",
 });
@@ -26,7 +29,8 @@ connectDB()
     // start using routes
     app.use("/api/postAccountData", postAccountData);
     app.use("/api/getAccountData", getAccountData);
-
+    app.use('/api/postTrueGrowthData',postTrueGrowthData);
+    app.use("/api/getTruwGrowthData",getTruwGrowthData)
     // start the server
     app.listen(process.env.PORT, () => {
       console.log(
