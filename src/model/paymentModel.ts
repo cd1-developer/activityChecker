@@ -46,8 +46,7 @@ const paymentSchema :Schema = new Schema({
     },
     logs:{
         type:String,
-        required:true,
-        default:null
+       
     }
 })
 const paymentModel= mongoose.models.Password as mongoose.Model<Payments> || mongoose.model<Payments>("Payment",paymentSchema);
