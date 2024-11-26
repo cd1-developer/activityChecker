@@ -11,6 +11,10 @@ interface Account extends Document {
     usedF: string;
     plannedUF: string;
     usedUF: string;
+    fStart: String;
+    fEnd: String;
+    ufStart: String;
+    ufEnd: String;
   }>;
 }
 
@@ -33,7 +37,6 @@ const accountSchema: Schema = new Schema({
       },
       redRibbon: {
         type: String,
-   
       },
       plannedF: {
         type: String,
@@ -50,6 +53,22 @@ const accountSchema: Schema = new Schema({
       usedUF: {
         type: String,
         required: true,
+      },
+      fStart: {
+        type: String,
+        default: null,
+      },
+      fEnd: {
+        type: String,
+        default: null,
+      },
+      ufStart: {
+        type: String,
+        default: null,
+      },
+      ufEnd: {
+        type: String,
+        default: null,
       },
     },
   ],

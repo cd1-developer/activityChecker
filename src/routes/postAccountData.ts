@@ -14,6 +14,10 @@ router.post("/", async (req: Request, res: Response) => {
       usedF,
       plannedUF,
       usedUF,
+      fStart,
+      fEnd,
+      ufStart,
+      ufEnd,
     } = req.body;
 
     const accountData = await AccountModel.findOne({ username });
@@ -30,6 +34,10 @@ router.post("/", async (req: Request, res: Response) => {
             usedF,
             plannedUF,
             usedUF,
+            fStart,
+            fEnd,
+            ufStart,
+            ufEnd,
           },
         ],
       });
@@ -50,6 +58,10 @@ router.post("/", async (req: Request, res: Response) => {
         usedF,
         plannedUF,
         usedUF,
+        fStart,
+        fEnd,
+        ufStart,
+        ufEnd,
       });
       await accountData.save(); // Save the updated document
       return res
