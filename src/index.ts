@@ -10,6 +10,8 @@ import removeDuplicate from "./routes/removeDuplicates";
 import postPayments from "./routes/postPayment";
 import getPaymentData from "./routes/getPaymentData";
 import removeDuplicateTrueGrowth from "./routes/removeDuplicateTureGrowth";
+
+import updateUsername from "./routes/updateUsername";
 import cors from "cors";
 
 dotenv.config({
@@ -41,6 +43,8 @@ connectDB()
     app.use("/api/postPayment", postPayments);
     app.use("/api/getPaymentData", getPaymentData);
     app.use("/api/removeDuplicateTrueGrowth", removeDuplicateTrueGrowth);
+
+    app.use("/api/updateUsername", updateUsername);
     // start the server
     app.listen(process.env.PORT, () => {
       console.log(
