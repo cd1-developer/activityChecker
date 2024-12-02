@@ -5,13 +5,7 @@ import postAccountData from "./routes/postAccountData";
 import getAccountData from "./routes/getAccountData";
 import postTrueGrowthData from "./routes/postTrueGrowthData";
 import getTruwGrowthData from "./routes/getTrueGrowthData";
-import getAllData from "./routes/getAllData";
-import removeDuplicate from "./routes/removeDuplicates";
-import postPayments from "./routes/postPayment";
-import getPaymentData from "./routes/getPaymentData";
-import removeDuplicateTrueGrowth from "./routes/removeDuplicateTureGrowth";
-
-import updateUsername from "./routes/updateUsername";
+import deleteTrueGrowth from "./routes/deleteTrueGrowth"
 import cors from "cors";
 
 dotenv.config({
@@ -38,13 +32,7 @@ connectDB()
     app.use("/api/getAccountData", getAccountData);
     app.use("/api/postTrueGrowthData", postTrueGrowthData);
     app.use("/api/getTruwGrowthData", getTruwGrowthData);
-    app.use("/api/getAllData", getAllData);
-    app.use("/api/removeDuplicate", removeDuplicate);
-    app.use("/api/postPayment", postPayments);
-    app.use("/api/getPaymentData", getPaymentData);
-    app.use("/api/removeDuplicateTrueGrowth", removeDuplicateTrueGrowth);
-
-    app.use("/api/updateUsername", updateUsername);
+    app.use("/api/deleteTrueGrowth",deleteTrueGrowth)
     // start the server
     app.listen(process.env.PORT, () => {
       console.log(
@@ -55,3 +43,11 @@ connectDB()
   .catch((error) => {
     console.log(`Error : could not able to start server ${error.message}`);
   });
+
+  // global caches 
+
+  app.use(function({err,req,res}:any){
+    if(err){
+      res.json({message:"Somthing went's wrong"})
+    }
+  })
