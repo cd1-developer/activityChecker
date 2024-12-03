@@ -34,6 +34,7 @@ connectDB()
     app.use("/api/getTruwGrowthData", getTruwGrowthData);
     app.use("/api/deleteTrueGrowth", deleteTrueGrowth);
     // start the server
+
     app.listen(process.env.PORT, () => {
       console.log(
         `Server is running at ${process.env.PORT} and Path is http://localhost:${process.env.PORT}`
