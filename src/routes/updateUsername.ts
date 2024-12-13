@@ -4,15 +4,15 @@ import trueGrowthModel from "../model/trueGrowthModel";
 const router = Router();
 router.put("/",async(req:Request,res:Response)=>{
     try {
-        const {username,UpdatedUsername} = req.body;
-        if(!username || !UpdatedUsername){
+        const {username,updatedUsername} = req.body;
+        if(!username || !updatedUsername){
 
             res.json({success:false,message:"Please add Username"})
         }
         const trueGrowthData = await trueGrowthModel.findOne({username});
    
         if(trueGrowthData){
-            trueGrowthData.username = UpdatedUsername;
+            trueGrowthData.username = updatedUsername;
             await trueGrowthData.save();
             res.json({success:true,message:"Username in TrueGrowth Model Updated Successfully"})
         }

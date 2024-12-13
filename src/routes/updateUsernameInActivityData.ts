@@ -5,9 +5,9 @@ const router = Router();
 
 router.put("/", async (req: Request, res: Response) => {
   try {
-    const { username, UpdatedUsername } = req.body;
+    const { username, updatedUsername } = req.body;
 
-    if (!username || !UpdatedUsername) {
+    if (!username || !updatedUsername) {
       return res.json({ success: false, message: "Please add Username" });
     }
 
@@ -19,7 +19,7 @@ router.put("/", async (req: Request, res: Response) => {
 
     
 
-    accountData.username = UpdatedUsername;
+    accountData.username = updatedUsername;
     await accountData.save();
     
     res.json({ success: true, message: "Username in Activity Model is Updated" });
