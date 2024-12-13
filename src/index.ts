@@ -7,6 +7,8 @@ import postTrueGrowthData from "./routes/postTrueGrowthData";
 import getTruwGrowthData from "./routes/getTrueGrowthData";
 import deleteTrueGrowth from "./routes/deleteTrueGrowth";
 import deleteActivityData from "./routes/deleteActivityData";
+import updateUsername from "./routes/updateUsername"
+import updateUsernameInAcitivityData from "./routes/updateUsernameInActivityData"
 import cors from "cors";
 
 dotenv.config({
@@ -35,6 +37,8 @@ connectDB()
     app.use("/api/getTruwGrowthData", getTruwGrowthData);
     app.use("/api/deleteTrueGrowth", deleteTrueGrowth);
     app.use("/api/deleteActivityData", deleteActivityData);
+    app.use("/api/updateUsername",updateUsername);
+    app.use("/api/updateUsernameInAcitivityData",updateUsernameInAcitivityData)
     // start the server
 
     app.listen(process.env.PORT, () => {
