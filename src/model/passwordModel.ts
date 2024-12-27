@@ -5,7 +5,7 @@ interface Password extends Document{
     placement :string,
     password:string,
     twoFactorCode:string,
-    free:Boolean,
+    isfree:Boolean,
     deviceId:String
 }
 const passwordSchema :Schema = new Schema({
@@ -26,7 +26,7 @@ const passwordSchema :Schema = new Schema({
     twoFactorCode:{
         type:String
     },
-    free:{
+    isfree:{
         type:Boolean,
         required:true,
         default:true

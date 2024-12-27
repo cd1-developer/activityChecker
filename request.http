@@ -1,8 +1,4 @@
-PUT http://localhost:8000/api/updateUsernameInAcitivityData
+GET http://localhost:8000/api/userInfo
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
-{
- "username":"shopmissbehavin1",
-    "UpdatedUsername":"shopmissbehavin"
-}

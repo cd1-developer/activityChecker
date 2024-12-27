@@ -9,8 +9,12 @@ import deleteTrueGrowth from "./routes/deleteTrueGrowth";
 import deleteActivityData from "./routes/deleteActivityData";
 import updateUsername from "./routes/updateUsername"
 import updateUsernameInAcitivityData from "./routes/updateUsernameInActivityData"
+import signUp from "./routes/signUp"
+import signIn from "./routes/signIn"
+import userInfo from "./routes/userInfo"
 import cors from "cors";
-
+import cookieParser from "cookie-parser";
+import logout from "./routes/logout"
 dotenv.config({
   path: ".env",
 });
@@ -25,6 +29,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser()); // This will allow you to access cookies as req.cookies
 // first db Should be connected properly then do other things
 connectDB()
   .then(() => {
@@ -39,6 +44,10 @@ connectDB()
     app.use("/api/deleteActivityData", deleteActivityData);
     app.use("/api/updateUsername",updateUsername);
     app.use("/api/updateUsernameInAcitivityData",updateUsernameInAcitivityData)
+    app.use("/api/signup",signUp);
+    app.use("/api/signIn",signIn);
+    app.use("/api/userInfo",userInfo)
+    app.use("/api/logout",logout)
     // start the server
 
     app.listen(process.env.PORT, () => {
