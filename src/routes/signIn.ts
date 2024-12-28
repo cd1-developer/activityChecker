@@ -32,7 +32,7 @@ res.cookie("token",token,{
 return res.json({sucess:true,message:"SignIn Sucessfull"})
 }catch(e:any){
 console.log("Could not able to Login ", e.message);
-return res.json({sucess:false,message:"Could not able to Login"})
+return res.json({sucess:false,message:"Could not able to Login",error:e.message})
 }
 })
 

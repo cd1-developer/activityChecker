@@ -1,4 +1,8 @@
-GET http://localhost:8000/api/userInfo
+POST http://localhost:8000/api/signIn
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
+{
+    "email":"shyamsharma@gmail.com",
+    "password":"shyam@123"
+}
