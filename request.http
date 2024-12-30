@@ -1,8 +1,15 @@
-POST http://localhost:8000/api/signIn
+POST http://localhost:8000/api/postTrueGrowthData
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
 {
-    "email":"shyamsharma@gmail.com",
-    "password":"shyam@123"
+    "username": "askthemouse",
+  
+            "date": "31/12/2024",   
+            "followYou": "10",
+            "unFollowYou": "12",
+            "netChange": "22",
+            "issue": "No",
+            "isWeekly":false
+   
 }

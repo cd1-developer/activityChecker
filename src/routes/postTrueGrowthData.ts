@@ -12,43 +12,77 @@ router.post("/", async (req: Request, res: Response) => {
       unFollowYou,
       netChange,
       issue,
-     
+     isWeekly
     } = req.body;
 
     const trueGrowthData = await trueGrowthModel.findOne({ username });
-
+    // True Growth Data not found Create new one
+    let newTrueGrowthData: any;
     if (!trueGrowthData) {
-      const newTrueGrowthData = new trueGrowthModel({
-        username,
-        trueGrowthInfo: [
-          {
-         
-            date,
-      followYou,
-      unFollowYou,
-      netChange,
-      issue,
-          },
-        ],
-      });
+      // If isWeekly is True which means's The True Growth is Monthly
+      if(isWeekly){
+        newTrueGrowthData = new trueGrowthModel({
+          username,
+          weekTrueGrowth: [
+            {
+              date,
+              followYou,
+              unFollowYou,
+              netChange,
+              issue,
+            },
+          ],
+        }); 
+      } // If isWeekly is False which means's The True Growth is Monthly
+      else if(isWeekly === false) {
+        newTrueGrowthData = new trueGrowthModel({
+          username,
+          MonthlyTrueGrowth: [
+            {
+              date,
+              followYou,
+              unFollowYou,
+              netChange,
+              issue,
+            },
+          ],
+        });
+      }
+ 
       await newTrueGrowthData.save();
       return res
         .status(201)
         .json({ success: true, message: "Data saved successfully" });
     } else {
       // Ensure accountInfo is initialized
-      if (!trueGrowthData.trueGrowthInfo) {
-        trueGrowthData.trueGrowthInfo = []; // Initialize if it's undefined
-      }
-      trueGrowthData.trueGrowthInfo.push({
+      if(isWeekly){
+        if (!trueGrowthData.weekTrueGrowth) {
+          trueGrowthData.weekTrueGrowth = []; // Initialize if it's undefined
+        }
+        trueGrowthData.weekTrueGrowth.push({
      
-        date,
-        followYou,
-        unFollowYou,
-        netChange,
-        issue,
-      });
-      await trueGrowthData.save(); // Save the updated document
+          date,
+          followYou,
+          unFollowYou,
+          netChange,
+          issue,
+        });
+        await trueGrowthData.save(); // Save the updated document
+      }
+     else if(isWeekly === false){
+        if (!trueGrowthData.MonthlyTrueGrowth) {
+          trueGrowthData.MonthlyTrueGrowth = []; // Initialize if it's undefined
+        }
+        trueGrowthData.MonthlyTrueGrowth.push({
+          date,
+          followYou,
+          unFollowYou,
+          netChange,
+          issue,
+        });
+        await trueGrowthData.save(); // Save the updated document
+      }
+   
       return res
         .status(200)
         .json({ success: true, message: "true Growth updated successfully" });

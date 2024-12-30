@@ -11,6 +11,22 @@ interface TrueGrowth extends Document {
     issue: string;
 
   }>;
+  weekTrueGrowth: Array<{
+    date: string;
+    followYou: string;
+    unFollowYou: string;
+    netChange: string;
+    issue: string;
+
+  }>;
+  MonthlyTrueGrowth: Array<{
+    date: string;
+    followYou: string;
+    unFollowYou: string;
+    netChange: string;
+    issue: string;
+
+  }>;
 }
 
 // Create the Mongoose schema
@@ -21,6 +37,52 @@ const trueGrowthSchema: Schema = new Schema({
     unique: true, // Optional: Consider adding this if usernames should be unique
   },
   trueGrowthInfo: [
+    {
+      date: {
+        type: String,
+        required: true,
+      },
+      followYou: {
+        type: String,
+        
+      },
+      unFollowYou: {
+        type: String,
+   
+      },
+      netChange: {
+        type: String,
+        
+      },
+      issue: {
+        type: String,
+      }
+    },
+  ],
+  weekTrueGrowth: [
+    {
+      date: {
+        type: String,
+        required: true,
+      },
+      followYou: {
+        type: String,
+        
+      },
+      unFollowYou: {
+        type: String,
+   
+      },
+      netChange: {
+        type: String,
+        
+      },
+      issue: {
+        type: String,
+      }
+    },
+  ],
+  MonthlyTrueGrowth: [
     {
       date: {
         type: String,
