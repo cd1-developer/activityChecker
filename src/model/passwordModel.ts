@@ -1,20 +1,22 @@
 import mongoose ,{Schema,Document} from "mongoose"
  
 interface Password extends Document{
-    subscriptionId : string,
+
     placement :string,
+    username:string,
     password:string,
     twoFactorCode:string,
     isfree:Boolean,
     deviceId:String
 }
 const passwordSchema :Schema = new Schema({
-    subscriptionId :{
+
+    placement:{
         type:String,
         required:true,
-        unique: true,
+        unique:true
     },
-    placement:{
+    username:{
         type:String,
         required:true,
         unique:true

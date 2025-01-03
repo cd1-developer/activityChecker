@@ -1,15 +1,11 @@
-POST http://localhost:8000/api/postTrueGrowthData
+POST http://localhost:8000/api/addPlacement
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
 {
-    "username": "askthemouse",
-  
-            "date": "31/12/2024",   
-            "followYou": "10",
-            "unFollowYou": "12",
-            "netChange": "22",
-            "issue": "No",
-            "isWeekly":false
-   
+    "placement": "202-E3",
+    "username": "praycloths.store",
+    "password": "123456",
+    "twoFactorCode": ""
 }
+

@@ -15,6 +15,9 @@ import userInfo from "./routes/userInfo"
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import logout from "./routes/logout"
+import addPlacement from "./routes/addPlacemenet"
+import bookPlacement from "./routes/bookPlacement"
+import getFreePlacement from "./routes/getFreePlacement"
 dotenv.config({
   path: ".env",
 });
@@ -28,7 +31,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json()); 
+
 app.use(cookieParser()); // This will allow you to access cookies as req.cookies
 // first db Should be connected properly then do other things
 connectDB()
@@ -47,7 +51,10 @@ connectDB()
     app.use("/api/signup",signUp);
     app.use("/api/signIn",signIn);
     app.use("/api/userInfo",userInfo)
-    app.use("/api/logout",logout)
+    app.use("/api/logout",logout);
+    app.use("/api/addPlacement",addPlacement);
+    app.use("/api/bookPlacement",bookPlacement);
+    app.use('/api/getFreePlacement',getFreePlacement)
     // start the server
 
     app.listen(process.env.PORT, () => {
