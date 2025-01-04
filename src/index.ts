@@ -17,7 +17,7 @@ import cookieParser from "cookie-parser";
 import logout from "./routes/logout"
 import addPlacement from "./routes/addPlacemenet"
 import bookPlacement from "./routes/bookPlacement"
-import getFreePlacement from "./routes/getFreePlacement"
+import getPlacementData from "./routes/getPlacementData"
 dotenv.config({
   path: ".env",
 });
@@ -54,7 +54,7 @@ connectDB()
     app.use("/api/logout",logout);
     app.use("/api/addPlacement",addPlacement);
     app.use("/api/bookPlacement",bookPlacement);
-    app.use('/api/getFreePlacement',getFreePlacement)
+    app.use('/api/getPlacementData',getPlacementData)
     // start the server
 
     app.listen(process.env.PORT, () => {
