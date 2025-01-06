@@ -9,11 +9,11 @@ router.post('/',async(req:Request,res:Response)=>{
         const device = await passwordModel.findOne({placement});
         if(device){
             device.deviceId = deviceId;
-            return res.json({sucess:true,message:"Placement Booked"})
+            return res.json({success:true,message:"Placement Booked"})
         }
     } catch (error:any) {
             console.log(`Error in Booking Placement ${error.message}`);
-            return res.json({sucess:false,message:"Error in Bookin Placement"})
+            return res.json({success:false,message:"Error in Bookin Placement"})
     }
 })
 

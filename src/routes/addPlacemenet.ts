@@ -17,7 +17,7 @@ router.post("/",async(req:Request,res:Response)=>{
                 device.twoFactorCode = twoFactorCode;
                 device.isfree = true;
              
-                return res.json({sucess:true,message:"Password is updated"})
+                return res.json({success:true,message:"Password is updated"})
            }else return 
         }else{
             const newPassword = new passwordModel({
@@ -29,11 +29,11 @@ router.post("/",async(req:Request,res:Response)=>{
             })
           
            await newPassword.save();
-            return res.json({sucess:true,message:"Password is added"})
+            return res.json({success:true,message:"Password is added"})
         }
     }catch(e:any){
         console.log("Could not able to add Placement ",e.message);
-        return res.json({sucess:false,message:"Error in adding placement",error:e.message})
+        return res.json({success:false,message:"Error in adding placement",error:e.message})
     }
 })
 
