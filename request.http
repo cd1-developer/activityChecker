@@ -1,11 +1,8 @@
-POST http://localhost:8000/api/addPlacement
+GET http://localhost:8000/api/getPlacementData?deviceId=76813c3ef8753753
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
-{
-    "placement": "202-E3",
-    "username": "praycloths.store",
-    "password": "123456",
-    "twoFactorCode": ""
-}
+
+  
+
 
