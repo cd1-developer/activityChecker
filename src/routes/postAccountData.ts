@@ -18,6 +18,7 @@ router.post("/", async (req: Request, res: Response) => {
       fEnd,
       ufStart,
       ufEnd,
+      yourOpinion,
     } = req.body;
 
     const accountData = await AccountModel.findOne({ username });
@@ -38,6 +39,7 @@ router.post("/", async (req: Request, res: Response) => {
             fEnd,
             ufStart,
             ufEnd,
+            yourOpinion,
           },
         ],
       });
@@ -62,6 +64,7 @@ router.post("/", async (req: Request, res: Response) => {
         fEnd,
         ufStart,
         ufEnd,
+        yourOpinion,
       });
       await accountData.save(); // Save the updated document
       return res

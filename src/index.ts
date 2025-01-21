@@ -7,17 +7,17 @@ import postTrueGrowthData from "./routes/postTrueGrowthData";
 import getTruwGrowthData from "./routes/getTrueGrowthData";
 import deleteTrueGrowth from "./routes/deleteTrueGrowth";
 import deleteActivityData from "./routes/deleteActivityData";
-import updateUsername from "./routes/updateUsername"
-import updateUsernameInAcitivityData from "./routes/updateUsernameInActivityData"
-import signUp from "./routes/signUp"
-import signIn from "./routes/signIn"
-import userInfo from "./routes/userInfo"
+import updateUsername from "./routes/updateUsername";
+import updateUsernameInAcitivityData from "./routes/updateUsernameInActivityData";
+import signUp from "./routes/signUp";
+import signIn from "./routes/signIn";
+import userInfo from "./routes/userInfo";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import logout from "./routes/logout"
-import addPlacement from "./routes/addPlacemenet"
-import bookPlacement from "./routes/bookPlacement"
-import getPlacementData from "./routes/getPlacementData"
+import logout from "./routes/logout";
+import addPlacement from "./routes/addPlacemenet";
+import bookPlacement from "./routes/bookPlacement";
+import getPlacementData from "./routes/getPlacementData";
 dotenv.config({
   path: ".env",
 });
@@ -31,7 +31,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json()); 
+app.use(express.json());
 
 app.use(cookieParser()); // This will allow you to access cookies as req.cookies
 // first db Should be connected properly then do other things
@@ -46,15 +46,18 @@ connectDB()
     app.use("/api/getTruwGrowthData", getTruwGrowthData);
     app.use("/api/deleteTrueGrowth", deleteTrueGrowth);
     app.use("/api/deleteActivityData", deleteActivityData);
-    app.use("/api/updateUsername",updateUsername);
-    app.use("/api/updateUsernameInAcitivityData",updateUsernameInAcitivityData)
-    app.use("/api/signup",signUp);
-    app.use("/api/signIn",signIn);
-    app.use("/api/userInfo",userInfo)
-    app.use("/api/logout",logout);
-    app.use("/api/addPlacement",addPlacement);
-    app.use("/api/bookPlacement",bookPlacement);
-    app.use('/api/getPlacementData',getPlacementData)
+    app.use("/api/updateUsername", updateUsername);
+    app.use(
+      "/api/updateUsernameInAcitivityData",
+      updateUsernameInAcitivityData
+    );
+    app.use("/api/signup", signUp);
+    app.use("/api/signIn", signIn);
+    app.use("/api/userInfo", userInfo);
+    app.use("/api/logout", logout);
+    app.use("/api/addPlacement", addPlacement);
+    app.use("/api/bookPlacement", bookPlacement);
+    app.use("/api/getPlacementData", getPlacementData);
     // start the server
 
     app.listen(process.env.PORT, () => {

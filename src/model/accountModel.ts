@@ -15,6 +15,7 @@ interface Account extends Document {
     fEnd: String;
     ufStart: String;
     ufEnd: String;
+    yourOpinion: String;
   }>;
 }
 
@@ -67,6 +68,10 @@ const accountSchema: Schema = new Schema({
         default: null,
       },
       ufEnd: {
+        type: String,
+        default: null,
+      },
+      yourOpinion: {
         type: String,
         default: null,
       },
