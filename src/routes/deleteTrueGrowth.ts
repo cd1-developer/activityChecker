@@ -13,9 +13,11 @@ router.delete("/", async (req: Request, res: Response) => {
     if (!mainDocumentId && !documentId) {
       res.json({ success: false, message: "Invalid input" });
     }
+
+    // Removing Data from weeklyTrueGrowthData
     await trueGrowthModel.updateOne(
       { _id: mainDocumentId },
-      { $pull: { trueGrowthInfo: { _id: documentId } } }
+      { $pull: { weekTrueGrowth: { _id: documentId } } }
     );
     res.json({
       success: true,
@@ -27,3 +29,5 @@ router.delete("/", async (req: Request, res: Response) => {
   }
 });
 export default router;
+
+
