@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+
 interface Payments extends Document {
   subscriptionId: string;
   memberShip: string;
@@ -54,6 +55,7 @@ const paymentSchema: Schema = new Schema({
   },
 });
 const paymentModel =
-  (mongoose.models.Password as mongoose.Model<Payments>) ||
+  (mongoose.models.Payment as mongoose.Model<Payments>) ||
   mongoose.model<Payments>("Payment", paymentSchema);
+
 export default paymentModel;

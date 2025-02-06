@@ -1,7 +1,16 @@
-POST http://localhost:8000/api/postPassword
+POST http://localhost:8000/api/postPayment
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
 
-
-
+{ 
+ "subscriptionId": "sub_IMoTmEORQ4Okxq",
+  "memberShip": "Monthly",
+  "access": "Expired",
+  "rebill": "Cancelled",
+  "rate": 269.1,
+  "group": "Turbo",
+  "start": "Tue Nov 10 2020 11:30:00 GMT+0530 (India Standard Time)",
+  "expiry":" Thu Dec 10 2020 11:30:00 GMT+0530 (India Standard Time)",
+  "logs": "" 
+  }
