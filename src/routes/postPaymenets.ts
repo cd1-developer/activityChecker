@@ -5,41 +5,38 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { paymentsData } = req.body;
+    const {
+      subscriptionId,
+      memberShip,
+      access,
+      rebill,
+      rate,
+      group,
+      expiry,
+      logs,
+      updatedAt,
+    } = req.body;
 
-    if (paymentsData.length > 0) {
-      // Prepare the data for bulk insert
-      const paymentsToInsert = paymentsData.map((data: any) => {
-        const currentDate = new Date();
-        return {
-          subscriptionId: data.subscriptionId,
-          memberShip: data.memberShip,
-          access: data.access,
-          rebill: data.rebill,
-          rate: data.rate,
-          group: data.group,
-          start: data.start,
-          expiry: data.expiry,
-          logs: data.logs,
-          updatedAt: [currentDate],
-        };
-      });
-      const chunkSize = 1000;
-      for (let i = 0; i < paymentsData.length; i += chunkSize) {
-        const chunk = paymentsData.slice(i, i + chunkSize);
-        await paymentModel.insertMany(chunk);
-      }
+    // Prepare the data for bulk insert
 
-      return res.json({
-        success: true,
-        message: `Successfully inserted ${paymentsData.length} payment records.`,
-      });
-    } else {
-      return res.json({
-        success: false,
-        message: "No payment data provided.",
-      });
-    }
+    const currentDate = new Date();
+
+    const newPaymentData = new paymentModel({
+      subscriptionId,
+      memberShip,
+      access,
+      rebill,
+      rate,
+      group,
+      expiry,
+      logs,
+      updatedAt: [currentDate, ...updatedAt],
+    });
+    await newPaymentData.save();
+    return res.json({
+      success: true,
+      message: `Susbcription Id ${subscriptionId} is added Successfully $`,
+    });
   } catch (e: any) {
     return res.json({
       success: false,
