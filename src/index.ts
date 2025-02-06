@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./db/index";
+import bodyParser from "body-parser";
 import postAccountData from "./routes/postAccountData";
 import getAccountData from "./routes/getAccountData";
 import postTrueGrowthData from "./routes/postTrueGrowthData";
@@ -24,6 +25,7 @@ dotenv.config({
 });
 
 const app = express();
+
 // CORS configuration
 app.use(
   cors({
@@ -36,6 +38,11 @@ app.use(express.json());
 
 app.use(cookieParser()); // This will allow you to access cookies as req.cookies
 // first db Should be connected properly then do other things
+
+// Increase payload size limit to 50MB (adjust as needed)
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
 connectDB()
   .then(() => {
     // expect response in json format
