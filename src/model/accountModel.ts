@@ -41,19 +41,15 @@ const accountSchema: Schema = new Schema({
       },
       plannedF: {
         type: String,
-      
       },
       usedF: {
         type: String,
-        
       },
       plannedUF: {
         type: String,
-        
       },
       usedUF: {
         type: String,
-     
       },
       fStart: {
         type: String,
