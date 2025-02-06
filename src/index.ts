@@ -19,7 +19,7 @@ import logout from "./routes/logout";
 import addPlacement from "./routes/addPlacemenet";
 import bookPlacement from "./routes/bookPlacement";
 import getPlacementData from "./routes/getPlacementData";
-import postPassword from "./routes/postPaymenets";
+import postPayment from "./routes/postPaymenets";
 dotenv.config({
   path: ".env",
 });
@@ -66,7 +66,7 @@ connectDB()
     app.use("/api/addPlacement", addPlacement);
     app.use("/api/bookPlacement", bookPlacement);
     app.use("/api/getPlacementData", getPlacementData);
-    app.use("/api/postPassword", postPassword);
+    app.use("/api/postPayment", postPayment);
     // start the server
 
     app.listen(process.env.PORT, () => {
