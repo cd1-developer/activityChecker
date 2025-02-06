@@ -24,9 +24,11 @@ router.post("/", async (req: Request, res: Response) => {
           updatedAt: [currentDate],
         };
       });
-
-      // Insert all data in a single operation
-      await paymentModel.insertMany(paymentsToInsert);
+      const chunkSize = 1000;
+      for (let i = 0; i < paymentsData.length; i += chunkSize) {
+        const chunk = paymentsData.slice(i, i + chunkSize);
+        await paymentModel.insertMany(chunk);
+      }
 
       return res.json({
         success: true,
