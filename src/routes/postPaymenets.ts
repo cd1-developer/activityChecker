@@ -5,34 +5,36 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const {
-      subscriptionId,
-      memberShip,
-      access,
-      rebill,
-      rate,
-      group,
-      start,
-      expiry,
-      logs,
-    } = req.body;
+    const { paymentData } = req.body;
 
-    const newPaymentData = new paymentModel({
-      subscriptionId,
-      memberShip,
-      access,
-      rebill,
-      rate,
-      group,
-      start,
-      expiry,
-      logs,
-      updatedAt: [new Date()],
-    });
-    await newPaymentData.save();
-    return res.json({
+    if (!paymentData || paymentData.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No payment data provided.",
+      });
+    }
+
+    // Prepare data for bulk insert
+    const currentDate = new Date().toISOString();
+    const paymentsToInsert = paymentData.map((data: any) => ({
+      subscriptionId: data.subscriptionId,
+      memberShip: data.memberShip,
+      access: data.access,
+      rebill: data.rebill,
+      rate: data.rate,
+      group: data.group,
+      start: data.start,
+      expiry: data.expiry,
+      logs: data.logs,
+      updatedAt: [currentDate],
+    }));
+
+    // Insert all records at once using insertMany
+    await paymentModel.insertMany(paymentsToInsert);
+
+    return res.status(201).json({
       success: true,
-      message: `Subscription ${subscriptionId}`,
+      message: `Successfully inserted ${paymentsToInsert.length} payment records.`,
     });
   } catch (e: any) {
     return res.status(500).json({
