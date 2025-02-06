@@ -5,42 +5,41 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const {
-      subscriptionId,
-      memberShip,
-      access,
-      rebill,
-      rate,
-      group,
-      expiry,
-      logs,
-      updatedAt,
-    } = req.body;
+    const { paymentsData } = req.body;
 
-    // Prepare the data for bulk insert
+    if (!Array.isArray(paymentsData) || paymentsData.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or empty data provided.",
+      });
+    }
 
     const currentDate = new Date();
 
-    const newPaymentData = new paymentModel({
-      subscriptionId,
-      memberShip,
-      access,
-      rebill,
-      rate,
-      group,
-      expiry,
-      logs,
-      updatedAt: [currentDate, ...updatedAt],
-    });
-    await newPaymentData.save();
+    // Prepare the data for bulk insert
+    const formattedPayments = paymentsData.map((data: any) => ({
+      subscriptionId: data.subscriptionId,
+      memberShip: data.memberShip,
+      access: data.access,
+      rebill: data.rebill,
+      rate: data.rate,
+      group: data.group,
+      expiry: data.expiry,
+      logs: data.logs || "",
+      updatedAt: [currentDate], // Add timestamp array
+    }));
+
+    // Insert all records at once using insertMany()
+    await paymentModel.insertMany(formattedPayments);
+
     return res.json({
       success: true,
-      message: `Susbcription Id ${subscriptionId} is added Successfully $`,
+      message: `${paymentsData.length} payment records added successfully.`,
     });
   } catch (e: any) {
-    return res.json({
+    return res.status(500).json({
       success: false,
-      message: `Error in sending data to the database: ${e.message}`,
+      message: `Error inserting data: ${e.message}`,
     });
   }
 });

@@ -1,4 +1,4 @@
-GET http://localhost:8000/api/getAccountData?username=daneatstacos
+POST http://localhost:8000/api/postPassword
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
