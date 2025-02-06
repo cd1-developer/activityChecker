@@ -8,46 +8,42 @@ router.post("/", async (req: Request, res: Response) => {
     const { paymentsData } = req.body;
 
     if (paymentsData.length > 0) {
-      paymentsData.forEach(async (data: any) => {
-        let {
-          subscriptionId,
-          memberShip,
-          access,
-          rebill,
-          rate,
-          group,
-          start,
-          expiry,
-          logs,
-        } = data;
+      // Prepare the data for bulk insert
+      const paymentsToInsert = paymentsData.map((data: any) => {
         const currentDate = new Date();
-        const updatedAt = [currentDate];
-        const newPaymentData = new paymentModel({
-          subscriptionId,
-          memberShip,
-          access,
-          rebill,
-          rate,
-          group,
-          start,
-          expiry,
-          logs,
-          updatedAt: [new Date(), ...updatedAt],
-        });
+        return {
+          subscriptionId: data.subscriptionId,
+          memberShip: data.memberShip,
+          access: data.access,
+          rebill: data.rebill,
+          rate: data.rate,
+          group: data.group,
+          start: data.start,
+          expiry: data.expiry,
+          logs: data.logs,
+          updatedAt: [currentDate],
+        };
+      });
 
-        await newPaymentData.save();
-        return res.json({
-          success: true,
-          message: `Paymenet Data is updated for subscriptionID ${subscriptionId}`,
-        });
+      // Insert all data in a single operation
+      await paymentModel.insertMany(paymentsToInsert);
+
+      return res.json({
+        success: true,
+        message: `Successfully inserted ${paymentsData.length} payment records.`,
+      });
+    } else {
+      return res.json({
+        success: false,
+        message: "No payment data provided.",
       });
     }
   } catch (e: any) {
     return res.json({
       success: false,
-      message: `Error in sending Data in database ${e.message}`,
+      message: `Error in sending data to the database: ${e.message}`,
     });
   }
 });
 
-export default router
+export default router;
