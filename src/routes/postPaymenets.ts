@@ -6,36 +6,24 @@ const router = Router();
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { paymentsData } = req.body;
+    return res.json({ success: true, data: paymentsData });
+    // const currentDate = new Date();
 
-    if (!Array.isArray(paymentsData) || paymentsData.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid or empty data provided.",
-      });
-    }
+    // // Prepare the data for bulk insert
+    // const formattedPayments = paymentsData.map((data: any) => ({
+    //   subscriptionId: data.subscriptionId,
+    //   memberShip: data.memberShip,
+    //   access: data.access,
+    //   rebill: data.rebill,
+    //   rate: data.rate,
+    //   group: data.group,
+    //   expiry: data.expiry,
+    //   logs: data.logs || "",
+    //   updatedAt: [currentDate], // Add timestamp array
+    // }));
 
-    const currentDate = new Date();
-
-    // Prepare the data for bulk insert
-    const formattedPayments = paymentsData.map((data: any) => ({
-      subscriptionId: data.subscriptionId,
-      memberShip: data.memberShip,
-      access: data.access,
-      rebill: data.rebill,
-      rate: data.rate,
-      group: data.group,
-      expiry: data.expiry,
-      logs: data.logs || "",
-      updatedAt: [currentDate], // Add timestamp array
-    }));
-
-    // Insert all records at once using insertMany()
-    await paymentModel.insertMany(formattedPayments);
-
-    return res.json({
-      success: true,
-      message: `${paymentsData.length} payment records added successfully.`,
-    });
+    // // Insert all records at once using insertMany()
+    // await paymentModel.insertMany(formattedPayments);
   } catch (e: any) {
     return res.status(500).json({
       success: false,
