@@ -3,6 +3,7 @@ import paymentModel from "../model/paymentModel";
 
 const router = Router();
 
+
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { paymentData } = req.body;
@@ -23,8 +24,8 @@ router.post("/", async (req: Request, res: Response) => {
       rebill: data.rebill,
       rate: data.rate,
       group: data.group,
-      start: data.start,
-      expiry: data.expiry,
+      start: new Date(data.start).toISOString(),
+      expiry: new Date(data.expiry).toISOString(),
       logs: data.logs,
       updatedAt: [currentDate],
     }));
@@ -45,3 +46,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 export default router;
+
+
+
+

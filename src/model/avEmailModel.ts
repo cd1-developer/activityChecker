@@ -1,0 +1,25 @@
+import mongoose,{Document,Schema} from "mongoose";
+
+export interface coreAVUsername  extends  Document{
+    subscriptionId:string;
+    avEmail:string;
+    avUsername: string;
+}
+
+const coreAVUsernameModel : Schema= new Schema({
+    subscriptionId:{
+        type:String,
+        required: true,
+        unique: true,
+    },
+    avEmail:{
+        type:String,
+        required:true,
+    },
+    avUsername:{
+        type:String
+    }
+})
+
+const avModel : mongoose.Model<coreAVUsername> = mongoose.models.avUsername || mongoose.model<coreAVUsername>("avUsername",coreAVUsernameModel)
+export default avModel

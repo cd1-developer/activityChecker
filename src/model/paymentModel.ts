@@ -7,8 +7,8 @@ interface Payments extends Document {
   rebill: string;
   rate: string;
   group: string;
-  start: string;
-  expiry: string;
+  start: Date;
+  expiry: Date;
   logs: string;
   updatedAt: Date[];
 }
@@ -39,11 +39,11 @@ const paymentSchema: Schema = new Schema({
     required: true,
   },
   start: {
-    type: String,
+    type: Date,
     required: true,
   },
   expiry: {
-    type: String,
+    type: Date,
     required: true,
   },
   logs: {
