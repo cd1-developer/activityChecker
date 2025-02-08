@@ -21,6 +21,9 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const { allMailData } = req.body;
     if (allMailData.length > 0) {
+
+        let notExistSubscriptions = [];
+
       let newRecurringMail = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType === "New Client"
       );
@@ -55,6 +58,7 @@ router.post("/", async (req: Request, res: Response) => {
         // sending all new recurring mail's payment data in datebase
         await paymentModel.insertMany(newRecurringMail);
         // sending all new recurring mail's avUsername data in database
+        await avModel.insertMany(newAvUsernameData)
         const messages = newRecurringMail.map(
           (mailInfo: MailInfo) =>
             `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
@@ -85,17 +89,26 @@ router.post("/", async (req: Request, res: Response) => {
             paymentData.logs = addLogs(logs, `${recivedDate} ${mailType}`);
             paymentData.updatedAt = [new Date(), ...updatedAt];
             await paymentData.save();
-            return res.json({
-              success: true,
-              message: `subscriptionId ${subscriptionId} && ${mailType}`,
-            });
+          
           } else {
-            return res.json({
-              success: false,
-              message: `Subscription ID ${subscriptionId} not found`,
-            });
+            notExistSubscriptions.push(`${subscriptionId} not found`)
           }
         }
+
+        // taking leftOver subscription Data because we can not send response in loop
+        const leftOverMessages = leftOverMails.map((mailInfo: MailInfo) =>
+            `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`);
+
+        if(notExistSubscriptions.length > 0){
+            return res.json({success: false,
+                message: notExistSubscriptions})
+        }
+
+        return res.json({
+            success: true,
+            message: leftOverMessages,
+          });
+
       } else {
         return res.json({ success: false, message: "No Left Over Mails" });
       }
