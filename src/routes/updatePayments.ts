@@ -63,7 +63,7 @@ router.post("/", async (req: Request, res: Response) => {
           (mailInfo: MailInfo) =>
             `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
         );
-        return res.json({ success: true, messages });
+        
       }
       let leftOverMails = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
