@@ -22,7 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
     const { allMailData } = req.body;
     if (allMailData.length > 0) {
 
-        let notExistSubscriptions = [];
+        let messages = [];
 
       let newRecurringMail = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType === "New Client"
@@ -59,7 +59,7 @@ router.post("/", async (req: Request, res: Response) => {
         await paymentModel.insertMany(newRecurringMail);
         // sending all new recurring mail's avUsername data in database
         await avModel.insertMany(newAvUsernameData)
-        const messages = newRecurringMail.map(
+         messages = newRecurringMail.map(
           (mailInfo: MailInfo) =>
             `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
         );
@@ -91,23 +91,20 @@ router.post("/", async (req: Request, res: Response) => {
             await paymentData.save();
           
           } else {
-            notExistSubscriptions.push(`${subscriptionId} not found`)
+            messages.push(`${subscriptionId} not found`)
           }
         }
 
         // taking leftOver subscription Data because we can not send response in loop
-        const leftOverMessages = leftOverMails.map((mailInfo: MailInfo) =>
-            `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`);
+         leftOverMails.forEach((mailInfo: MailInfo) =>
+            messages.push( `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`));
 
-        if(notExistSubscriptions.length > 0){
+        if(messages.length > 0){
             return res.json({success: false,
-                message: notExistSubscriptions})
+                message: messages})
         }
 
-        return res.json({
-            success: true,
-            message: leftOverMessages,
-          });
+      
 
       } else {
         return res.json({ success: false, message: "No Left Over Mails" });
