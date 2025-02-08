@@ -3,6 +3,7 @@ import paymentModel from "../model/paymentModel";
 import avModel from "../model/avEmailModel";
 import getTrialPeriodDate from "../helper/getTrialPeriod";
 import addLogs from "../helper/addLogs";
+import removeDuplicate from "../helper/removeDuplicate";
 
 interface MailInfo {
   subscriptionId: string;
@@ -58,9 +59,10 @@ router.post("/", async (req: Request, res: Response) => {
         })
 
         // sending all new recurring mail's payment data in datebase
-        await paymentModel.insertMany(newRecurringMail);
+        await paymentModel.insertMany(removeDuplicate(newRecurringMail));
         // sending all new recurring mail's avUsername data in database
-        await avModel.insertMany(newAvUsernameData)
+        await avModel.insertMany(removeDuplicate(newAvUsernameData));
+        // taking all messages at one place
          messages = newRecurringMail.map(
           (mailInfo: MailInfo) =>
             `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
