@@ -14,10 +14,12 @@ const coreAVUsernameModel : Schema= new Schema({
     },
     avEmail:{
         type:String,
-        required:true,
+        default :"",
+        
     },
     avUsername:{
-        type:String
+        type:String,
+        default :""
     }
 })
 
