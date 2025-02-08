@@ -49,11 +49,13 @@ router.post("/", async (req: Request, res: Response) => {
           };
         });
         
-        let newAvUsernameData = newRecurringMail.map((mailInfo:MailInfo)=> ({
-          subscriptionId:mailInfo.subscriptionId,
-          avEmail:mailInfo.email,
-          avUsername:mailInfo.login
-        }))
+        let newAvUsernameData = newRecurringMail.map((mailInfo:MailInfo)=> {
+            return{
+                subscriptionId:mailInfo.subscriptionId,
+                avEmail:mailInfo.email,
+                avUsername:mailInfo.login
+            }
+        })
 
         // sending all new recurring mail's payment data in datebase
         await paymentModel.insertMany(newRecurringMail);
