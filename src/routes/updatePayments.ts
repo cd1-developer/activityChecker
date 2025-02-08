@@ -104,7 +104,7 @@ router.post("/", async (req: Request, res: Response) => {
             messages.push( `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`));
 
         if(messages.length > 0){
-            return res.json({success: false,
+            return res.json({success: true,
                 message: messages})
         }
 
