@@ -80,6 +80,7 @@ router.post("/", async (req: Request, res: Response) => {
           if (paymentData) {
             let { logs, updatedAt } = paymentData;
             if (mailType === "Monthly Payment") {
+              paymentData.memberShip = "Monthly"
               paymentData.access = "Enabled";
               paymentData.rebill = "Active";
               paymentData.expiry = expiredDate;
