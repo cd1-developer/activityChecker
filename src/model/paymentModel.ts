@@ -36,7 +36,7 @@ const paymentSchema: Schema = new Schema({
   },
   group: {
     type: String,
-    required: true,
+ 
   },
   start: {
     type: Date,

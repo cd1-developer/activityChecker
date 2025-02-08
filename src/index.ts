@@ -21,6 +21,7 @@ import bookPlacement from "./routes/bookPlacement";
 import getPlacementData from "./routes/getPlacementData";
 import postPayment from "./routes/postPaymenets";
 import postAvUsername from "./routes/postAvUsername"
+import updatePayments from "./routes/updatePayments"
 dotenv.config({
   path: ".env",
 });
@@ -69,6 +70,7 @@ connectDB()
     app.use("/api/getPlacementData", getPlacementData);
     app.use("/api/postPayment", postPayment);
     app.use("/api/postAvUsername",postAvUsername)
+    app.use("/api/updatePayments",updatePayments)
     // start the server
 
     app.listen(process.env.PORT, () => {
