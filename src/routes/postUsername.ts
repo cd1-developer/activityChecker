@@ -5,9 +5,19 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { usernameData } = req.body;
+    const { subscriptionId, username } = req.body;
+    if (subscriptionId === "" || username === "") {
+      return res.json({
+        success: false,
+        message: "Subscription ID and Username can not be blank",
+      });
+    }
 
-    await usernameModel.insertMany(usernameData);
+    const newUsername = new usernameModel({
+      subscriptionId,
+      username,
+    });
+    await newUsername.save();
     return res.json({
       success: true,
       message: "Successfully added Username in Database",
