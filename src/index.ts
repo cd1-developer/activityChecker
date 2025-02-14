@@ -25,6 +25,7 @@ import updatePayments from "./routes/updatePayments";
 import getPaymentData from "./routes/getPaymentData";
 import getCoreAVData from "./routes/getAvEmailData";
 import postUsernameData from "./routes/postUsername";
+import getUsernameData from "./routes/getUsernameData";
 dotenv.config({
   path: ".env",
 });
@@ -77,6 +78,7 @@ connectDB()
     app.use("/api/getPaymentData", getPaymentData);
     app.use("/api/getCoreAVData", getCoreAVData);
     app.use("/api/postUsernameData", postUsernameData);
+    app.use("/api/getUsernameData", getUsernameData);
     // start the server
 
     app.listen(process.env.PORT, () => {
