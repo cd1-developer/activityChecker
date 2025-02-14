@@ -5,7 +5,7 @@ import usernameModel from "../model/UsernameModel";
 const router = Router();
 router.put("/", async (req: Request, res: Response) => {
   try {
-    const { subscriptionId, username, updatedUsername } = req.body;
+    const { subscriptionId, username, updatedUsername, updatedBy } = req.body;
     if (!username || !updatedUsername || !subscriptionId) {
       res.json({ success: false, message: "Please add Username" });
     }
@@ -15,6 +15,7 @@ router.put("/", async (req: Request, res: Response) => {
     if (usernameData) {
       if (username.username === username) {
         usernameData.username = updatedUsername;
+        usernameData.updatedBy = updatedBy;
         await usernameData.save();
       }
     }
