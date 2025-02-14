@@ -20,10 +20,11 @@ import addPlacement from "./routes/addPlacemenet";
 import bookPlacement from "./routes/bookPlacement";
 import getPlacementData from "./routes/getPlacementData";
 import postPayment from "./routes/postPaymenets";
-import postAvUsername from "./routes/postAvUsername"
-import updatePayments from "./routes/updatePayments"
-import getPaymentData from "./routes/getPaymentData"
-import getCoreAVData from "./routes/getAvEmailData"
+import postAvUsername from "./routes/postAvUsername";
+import updatePayments from "./routes/updatePayments";
+import getPaymentData from "./routes/getPaymentData";
+import getCoreAVData from "./routes/getAvEmailData";
+import postUsernameData from "./routes/postUsername";
 dotenv.config({
   path: ".env",
 });
@@ -71,10 +72,11 @@ connectDB()
     app.use("/api/bookPlacement", bookPlacement);
     app.use("/api/getPlacementData", getPlacementData);
     app.use("/api/postPayment", postPayment);
-    app.use("/api/postAvUsername",postAvUsername)
-    app.use("/api/updatePayments",updatePayments);
-    app.use("/api/getPaymentData",getPaymentData);
-    app.use("/api/getCoreAVData",getCoreAVData)
+    app.use("/api/postAvUsername", postAvUsername);
+    app.use("/api/updatePayments", updatePayments);
+    app.use("/api/getPaymentData", getPaymentData);
+    app.use("/api/getCoreAVData", getCoreAVData);
+    app.use("/api/postUsernameData", postUsernameData);
     // start the server
 
     app.listen(process.env.PORT, () => {
