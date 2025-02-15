@@ -49,7 +49,7 @@ router.post("/", async (req: Request, res: Response) => {
           };
         });
 
-        let newAvUsernameData = newRecurringMail.map((mailInfo: MailInfo) => {
+        let newAvUsernameData = newRecurringMail.map((mailInfo: any) => {
           return {
             subscriptionId: mailInfo.subscriptionId,
             avEmail: mailInfo.email,
@@ -66,7 +66,7 @@ router.post("/", async (req: Request, res: Response) => {
         //   (mailInfo: MailInfo) =>
         //     `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
         // );
-        messages = newRecurringMail;
+        messages = newAvUsernameData;
       }
       let leftOverMails = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
