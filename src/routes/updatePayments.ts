@@ -60,17 +60,16 @@ router.post("/", async (req: Request, res: Response) => {
         });
 
         // sending all new recurring mail's payment data in datebase
-        // await paymentModel.insertMany(
-        //   removeDuplicate(newRecurringSubcriptions)
-        // );
+        await paymentModel.insertMany(
+          removeDuplicate(newRecurringSubcriptions)
+        );
         // sending all new recurring mail's avUsername data in database
-        //  await avModel.insertMany(removeDuplicate(newAvUsernameData));
+        await avModel.insertMany(removeDuplicate(newAvUsernameData));
         // taking all messages at one place
-        // messages = newRecurringMail.map(
-        //   (mailInfo: MailInfo) =>
-        //     `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
-        // );
-        messages = newAvUsernameData;
+        messages = newRecurringMail.map(
+          (mailInfo: MailInfo) =>
+            `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
+        );
       }
       let leftOverMails = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
@@ -96,7 +95,7 @@ router.post("/", async (req: Request, res: Response) => {
 
             paymentData.logs = addLogs(logs, `${recivedDate} ${mailType}`);
             paymentData.updatedAt = [new Date(), ...updatedAt];
-            //  await paymentData.save();
+            await paymentData.save();
           } else {
             messages.push(`${subscriptionId} not found`);
           }
