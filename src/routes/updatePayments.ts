@@ -66,7 +66,7 @@ router.post("/", async (req: Request, res: Response) => {
         //   (mailInfo: MailInfo) =>
         //     `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
         // );
-        messages = newAvUsernameData;
+        messages = allMailData;
       }
       let leftOverMails = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
