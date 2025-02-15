@@ -99,11 +99,11 @@ router.post("/", async (req: Request, res: Response) => {
         }
 
         // taking leftOver subscription Data because we can not send response in loop
-        leftOverMails.forEach((mailInfo: MailInfo) =>
-          messages.push(
-            `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`
-          )
-        );
+        // leftOverMails.forEach((mailInfo: MailInfo) =>
+        //   messages.push(
+        //     `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`
+        //   )
+        // );
 
         if (messages.length > 0) {
           return res.json({ success: true, message: messages });
