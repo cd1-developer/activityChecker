@@ -22,8 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const { allMailData } = req.body;
     if (allMailData.length > 0) {
-
-        let messages = [];
+      let messages = [];
 
       let newRecurringMail = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType === "New Client"
@@ -49,25 +48,25 @@ router.post("/", async (req: Request, res: Response) => {
             updatedAt: [new Date()],
           };
         });
-        
-        let newAvUsernameData = newRecurringMail.map((mailInfo:MailInfo)=> {
-            return{
-                subscriptionId:mailInfo.subscriptionId,
-                avEmail:mailInfo.email,
-                avUsername:mailInfo.login
-            }
-        })
+
+        let newAvUsernameData = newRecurringMail.map((mailInfo: MailInfo) => {
+          return {
+            subscriptionId: mailInfo.subscriptionId,
+            avEmail: mailInfo.email,
+            avUsername: mailInfo.login,
+          };
+        });
 
         // sending all new recurring mail's payment data in datebase
-        await paymentModel.insertMany(removeDuplicate(newRecurringMail));
+        // await paymentModel.insertMany(removeDuplicate(newRecurringMail));
         // sending all new recurring mail's avUsername data in database
         await avModel.insertMany(removeDuplicate(newAvUsernameData));
         // taking all messages at one place
-         messages = newRecurringMail.map(
-          (mailInfo: MailInfo) =>
-            `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
-        );
-        
+        //  messages = newRecurringMail.map(
+        //   (mailInfo: MailInfo) =>
+        //     `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
+        // );
+        messages = newAvUsernameData;
       }
       let leftOverMails = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
@@ -80,7 +79,7 @@ router.post("/", async (req: Request, res: Response) => {
           if (paymentData) {
             let { logs, updatedAt } = paymentData;
             if (mailType === "Monthly Payment") {
-              paymentData.memberShip = "Monthly"
+              paymentData.memberShip = "Monthly";
               paymentData.access = "Enabled";
               paymentData.rebill = "Active";
               paymentData.expiry = expiredDate;
@@ -93,24 +92,22 @@ router.post("/", async (req: Request, res: Response) => {
 
             paymentData.logs = addLogs(logs, `${recivedDate} ${mailType}`);
             paymentData.updatedAt = [new Date(), ...updatedAt];
-            await paymentData.save();
-          
+            //   await paymentData.save();
           } else {
-            messages.push(`${subscriptionId} not found`)
+            messages.push(`${subscriptionId} not found`);
           }
         }
 
         // taking leftOver subscription Data because we can not send response in loop
-         leftOverMails.forEach((mailInfo: MailInfo) =>
-            messages.push( `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`));
+        leftOverMails.forEach((mailInfo: MailInfo) =>
+          messages.push(
+            `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`
+          )
+        );
 
-        if(messages.length > 0){
-            return res.json({success: true,
-                message: messages})
+        if (messages.length > 0) {
+          return res.json({ success: true, message: messages });
         }
-
-      
-
       } else {
         return res.json({ success: false, message: "No Left Over Mails" });
       }
@@ -127,4 +124,4 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-export default router
+export default router;
