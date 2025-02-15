@@ -60,7 +60,7 @@ router.post("/", async (req: Request, res: Response) => {
         // sending all new recurring mail's payment data in datebase
         // await paymentModel.insertMany(removeDuplicate(newRecurringMail));
         // sending all new recurring mail's avUsername data in database
-        await avModel.insertMany(removeDuplicate(newAvUsernameData));
+        // await avModel.insertMany(removeDuplicate(newAvUsernameData));
         // taking all messages at one place
         //  messages = newRecurringMail.map(
         //   (mailInfo: MailInfo) =>
