@@ -25,31 +25,33 @@ router.post("/", async (req: Request, res: Response) => {
       let messages = [];
 
       let newRecurringMail = allMailData.filter(
-        (mailInfo: any) => mailInfo.mailType === "New Client"
+        (mailInfo: MailInfo) => mailInfo.mailType === "New Client"
       );
       if (newRecurringMail.length > 0) {
-        newRecurringMail = newRecurringMail.map((mailInfo: MailInfo) => {
-          let { subscriptionId, amount, invoiceDate, recivedDate } = mailInfo;
+        let newRecurringSubcriptions = newRecurringMail.map(
+          (mailInfo: MailInfo) => {
+            let { subscriptionId, amount, invoiceDate, recivedDate } = mailInfo;
 
-          return {
-            subscriptionId,
-            memberShip: "Trial",
-            access: "Enabled",
-            rebill: "Active",
-            rate: amount,
-            group: ["$119", "$139", "$129"].includes(amount)
-              ? "Starter"
-              : ["$179", "$199", "$135", "$189"].includes(amount)
-              ? "Turbo"
-              : "",
-            start: new Date(invoiceDate),
-            expiry: getTrialPeriodDate(invoiceDate),
-            logs: `${recivedDate} new Client`,
-            updatedAt: [new Date()],
-          };
-        });
+            return {
+              subscriptionId,
+              memberShip: "Trial",
+              access: "Enabled",
+              rebill: "Active",
+              rate: amount,
+              group: ["$119", "$139", "$129"].includes(amount)
+                ? "Starter"
+                : ["$179", "$199", "$135", "$189"].includes(amount)
+                ? "Turbo"
+                : "",
+              start: new Date(invoiceDate),
+              expiry: getTrialPeriodDate(invoiceDate),
+              logs: `${recivedDate} new Client`,
+              updatedAt: [new Date()],
+            };
+          }
+        );
 
-        let newAvUsernameData = newRecurringMail.map((mailInfo: any) => {
+        let newAvUsernameData = newRecurringMail.map((mailInfo: MailInfo) => {
           return {
             subscriptionId: mailInfo.subscriptionId,
             avEmail: mailInfo.email,
@@ -58,15 +60,17 @@ router.post("/", async (req: Request, res: Response) => {
         });
 
         // sending all new recurring mail's payment data in datebase
-        // await paymentModel.insertMany(removeDuplicate(newRecurringMail));
+        await paymentModel.insertMany(
+          removeDuplicate(newRecurringSubcriptions)
+        );
         // sending all new recurring mail's avUsername data in database
-        // await avModel.insertMany(removeDuplicate(newAvUsernameData));
+        await avModel.insertMany(removeDuplicate(newAvUsernameData));
         // taking all messages at one place
-        //  messages = newRecurringMail.map(
+        // messages = newRecurringMail.map(
         //   (mailInfo: MailInfo) =>
         //     `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
         // );
-        messages = newRecurringMail;
+        messages = newAvUsernameData;
       }
       let leftOverMails = allMailData.filter(
         (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
@@ -92,18 +96,18 @@ router.post("/", async (req: Request, res: Response) => {
 
             paymentData.logs = addLogs(logs, `${recivedDate} ${mailType}`);
             paymentData.updatedAt = [new Date(), ...updatedAt];
-            //   await paymentData.save();
+            await paymentData.save();
           } else {
             messages.push(`${subscriptionId} not found`);
           }
         }
 
         // taking leftOver subscription Data because we can not send response in loop
-        // leftOverMails.forEach((mailInfo: MailInfo) =>
-        //   messages.push(
-        //     `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`
-        //   )
-        // );
+        leftOverMails.forEach((mailInfo: MailInfo) =>
+          messages.push(
+            `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`
+          )
+        );
 
         if (messages.length > 0) {
           return res.json({ success: true, message: messages });
