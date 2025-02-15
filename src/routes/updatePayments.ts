@@ -25,7 +25,7 @@ router.post("/", async (req: Request, res: Response) => {
       let messages = [];
 
       let newRecurringMail = allMailData.filter(
-        (mailInfo: MailInfo) => mailInfo.mailType === "New Client"
+        (mailInfo: any) => mailInfo.mailType === "New Client"
       );
       if (newRecurringMail.length > 0) {
         newRecurringMail = newRecurringMail.map((mailInfo: MailInfo) => {
