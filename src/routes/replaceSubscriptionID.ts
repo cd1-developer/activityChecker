@@ -14,7 +14,7 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
     const usernameData: Username = await usernameModel.findOne({
-      oldSubscriptionId,
+      subscriptionId: oldSubscriptionId,
     });
     if (usernameData) {
       usernameData.subscriptionId = newSubsriptionId;
