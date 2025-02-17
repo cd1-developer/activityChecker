@@ -16,7 +16,7 @@ router.post("/", async (req: Request, res: Response) => {
     const paymentData = await paymentModel.findOne({ subscriptionId });
 
     if (paymentData) {
-      paymentData.expiry = expiry;
+      paymentData.expiry = new Date(expiry);
       await paymentData.save();
       return res.json({
         success: true,
