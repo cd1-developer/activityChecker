@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface Payments extends Document {
+export interface Payments extends Document {
   subscriptionId: string;
   memberShip: string;
   access: string;
@@ -36,7 +36,6 @@ const paymentSchema: Schema = new Schema({
   },
   group: {
     type: String,
- 
   },
   start: {
     type: Date,
