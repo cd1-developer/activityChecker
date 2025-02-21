@@ -21,108 +21,150 @@ const router = Router();
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { allMailData } = req.body;
-    if (allMailData.length > 0) {
-      let messages = [];
+    const messages: string[] = [];
 
-      let newRecurringMail = allMailData.filter(
-        (mailInfo: MailInfo) => mailInfo.mailType === "New Client"
-      );
-      if (newRecurringMail.length > 0) {
-        let newRecurringSubcriptions = newRecurringMail.map(
-          (mailInfo: MailInfo) => {
-            let { subscriptionId, amount, invoiceDate, recivedDate } = mailInfo;
+    if (!allMailData || allMailData.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No payment data provided",
+      });
+    }
 
-            return {
-              subscriptionId,
-              memberShip: "Trial",
-              access: "Enabled",
-              rebill: "Active",
-              rate: amount,
-              group: ["$119", "$139", "$129"].includes(amount)
-                ? "Starter"
-                : ["$179", "$199", "$135", "$189"].includes(amount)
-                ? "Turbo"
-                : "",
-              start: new Date(invoiceDate),
-              expiry: getTrialPeriodDate(invoiceDate),
-              logs: `${recivedDate} new Client`,
-              updatedAt: [new Date()],
-            };
-          }
-        );
+    // Process New Client emails
+    const newClients = allMailData.filter(
+      (mail: MailInfo) => mail.mailType === "New Client"
+    );
 
-        let newAvUsernameData = newRecurringMail.map((mailInfo: MailInfo) => {
-          return {
-            subscriptionId: mailInfo.subscriptionId,
-            avEmail: mailInfo.email,
-            avUsername: mailInfo.login,
-          };
-        });
+    if (newClients.length > 0) {
+      try {
+        // Create payment records
+        const newPayments = newClients.map((mail) => ({
+          subscriptionId: mail.subscriptionId,
+          memberShip: "Trial",
+          access: "Enabled",
+          rebill: "Active",
+          rate: mail.amount,
+          group: ["$119", "$139", "$129"].includes(mail.amount || "")
+            ? "Starter"
+            : ["$179", "$199", "$135", "$189"].includes(mail.amount || "")
+            ? "Turbo"
+            : "",
+          start: new Date(mail.invoiceDate!),
+          expiry: getTrialPeriodDate(mail.invoiceDate!),
+          logs: `${mail.recivedDate} new Client`,
+          updatedAt: [new Date()],
+        }));
 
-        // sending all new recurring mail's payment data in datebase
-        await paymentModel.insertMany(
-          removeDuplicate(newRecurringSubcriptions)
-        );
-        // sending all new recurring mail's avUsername data in database
-        await avModel.insertMany(removeDuplicate(newAvUsernameData));
-        // taking all messages at one place
-        messages = newRecurringMail.map(
-          (mailInfo: MailInfo) =>
-            `Trial provided to the subscriptionId ${mailInfo.subscriptionId}`
-        );
-      }
-      let leftOverMails = allMailData.filter(
-        (mailInfo: MailInfo) => mailInfo.mailType !== "New Client"
-      );
+        await paymentModel.insertMany(removeDuplicate(newPayments));
 
-      if (leftOverMails.length > 0) {
-        for (const mailInfo of leftOverMails) {
-          let { subscriptionId, mailType, expiredDate, recivedDate } = mailInfo;
-          let paymentData = await paymentModel.findOne({ subscriptionId });
-          if (paymentData) {
-            let { logs, updatedAt } = paymentData;
-            if (mailType === "Monthly Payment") {
-              paymentData.memberShip = "Monthly";
-              paymentData.access = "Enabled";
-              paymentData.rebill = "Active";
-              paymentData.expiry = expiredDate;
-            } else if (mailType === "Client Cancelled") {
-              paymentData.rebill = "Cancelled";
-            } else if (mailType === "Transaction Failed") {
-              paymentData.access = "Expired";
-              paymentData.rebill = "Payment Failed";
-            }
+        // Create AV records
+        const avRecords = newClients.map((mail) => ({
+          subscriptionId: mail.subscriptionId,
+          avEmail: mail.email,
+          avUsername: mail.login,
+        }));
 
-            paymentData.logs = addLogs(logs, `${recivedDate} ${mailType}`);
-            paymentData.updatedAt = [new Date(), ...updatedAt];
-            await paymentData.save();
-          } else {
-            messages.push(`${subscriptionId} not found`);
-          }
-        }
+        await avModel.insertMany(removeDuplicate(avRecords));
 
-        // taking leftOver subscription Data because we can not send response in loop
-        leftOverMails.forEach((mailInfo: MailInfo) =>
-          messages.push(
-            `subscriptionId ${mailInfo.subscriptionId} && ${mailInfo.mailType}`
+        messages.push(
+          ...newClients.map(
+            (mail) =>
+              `🎉 Trial activated for subscription ${mail.subscriptionId}`
           )
         );
-
-        if (messages.length > 0) {
-          return res.json({ success: true, message: messages });
-        }
-      } else {
-        return res.json({ success: false, message: "No Left Over Mails" });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to create new subscriptions",
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
       }
-    } else
+    }
+
+    // Process other email types
+    const otherMails = allMailData.filter(
+      (mail: MailInfo) => mail.mailType !== "New Client"
+    );
+
+    for (const mail of otherMails) {
+      try {
+        const payment = await paymentModel.findOne({
+          subscriptionId: mail.subscriptionId,
+        });
+
+        if (!payment) {
+          messages.push(`❌ Subscription ${mail.subscriptionId} not found`);
+          continue;
+        }
+
+        const originalState = {
+          membership: payment.memberShip,
+          access: payment.access,
+          rebill: payment.rebill,
+        };
+
+        // Update based on mail type
+        switch (mail.mailType) {
+          case "Monthly Payment":
+            payment.memberShip = "Monthly";
+            payment.access = "Enabled";
+            payment.rebill = "Active";
+            payment.expiry = mail.expiredDate;
+            break;
+
+          case "Client Cancelled":
+            payment.rebill = "Cancelled";
+            break;
+
+          case "Transaction Failed":
+            payment.access = "Expired";
+            payment.rebill = "Payment Failed";
+            break;
+        }
+
+        // Add logs only if state changed
+        if (payment.isModified()) {
+          payment.logs = addLogs(
+            payment.logs,
+            `${mail.recivedDate} ${mail.mailType}`
+          );
+          payment.updatedAt = [new Date(), ...payment.updatedAt];
+          await payment.save();
+          messages.push(`🔄 Updated ${mail.subscriptionId}: ${mail.mailType}`);
+        } else {
+          messages.push(
+            `⏩ No changes for ${mail.subscriptionId}: ${mail.mailType}`
+          );
+        }
+      } catch (error) {
+        messages.push(
+          `⚠️ Error processing ${mail.subscriptionId}: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+      }
+    }
+
+    // Final response
+    if (messages.length > 0) {
       return res.json({
-        success: false,
-        message: "Please provide payment Data ",
+        success: true,
+        message: "Processing complete",
+        details: messages,
+        processedCount: messages.length,
       });
-  } catch (e: any) {
-    return res.json({
+    }
+
+    return res.status(404).json({
       success: false,
-      message: `Could not able to update payment ${e.message}`,
+      message: "No actionable data found in request",
+    });
+  } catch (error) {
+    console.error("Server Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
