@@ -13,6 +13,15 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
+    const usernameData = await usernameModel({ subscriptionId });
+
+    if (usernameData) {
+      return res.json({
+        success: false,
+        message: `Usename ${username} is already exist`,
+      });
+    }
+
     const newUsername = new usernameModel({
       subscriptionId,
       username,
