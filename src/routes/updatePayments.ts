@@ -47,7 +47,7 @@ router.post("/", async (req: Request, res: Response) => {
             messages.push(
               `❌ Subscription ${mail.subscriptionId} already exist`
             );
-            return;
+            continue;
           }
           // Create payment records
 
@@ -112,12 +112,6 @@ router.post("/", async (req: Request, res: Response) => {
           messages.push(`❌ Subscription ${mail.subscriptionId} not found`);
           continue;
         }
-
-        const originalState = {
-          membership: payment.memberShip,
-          access: payment.access,
-          rebill: payment.rebill,
-        };
 
         // Update based on mail type
         switch (mail.mailType) {
