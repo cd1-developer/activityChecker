@@ -22,6 +22,8 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const { allMailData } = req.body;
     const messages: string[] = [];
+    const newPayments = [];
+    const avRecords = [];
 
     if (!allMailData || allMailData.length === 0) {
       return res.status(400).json({
@@ -37,41 +39,55 @@ router.post("/", async (req: Request, res: Response) => {
 
     if (newClients.length > 0) {
       try {
-        // Create payment records
-        const newPayments = newClients.map((mail) => ({
-          subscriptionId: mail.subscriptionId,
-          memberShip: "Trial",
-          access: "Enabled",
-          rebill: "Active",
-          rate: mail.amount,
-          group: ["$119", "$139", "$129"].includes(mail.amount || "")
-            ? "Starter"
-            : ["$179", "$199", "$135", "$189"].includes(mail.amount || "")
-            ? "Turbo"
-            : "",
-          start: new Date(mail.invoiceDate!),
-          expiry: getTrialPeriodDate(mail.invoiceDate!),
-          logs: `${mail.recivedDate} new Client`,
-          updatedAt: [new Date()],
-        }));
+        for (const mail of newClients) {
+          const paymentData = await paymentModel.findOne({
+            subscriptionId: mail.subscriptionId,
+          });
+          if (paymentData) {
+            messages.push(
+              `❌ Subscription ${mail.subscriptionId} already exist`
+            );
+            return;
+          }
+          // Create payment records
 
-        await paymentModel.insertMany(removeDuplicate(newPayments));
+          newPayments.push({
+            subscriptionId: mail.subscriptionId,
+            memberShip: "Trial",
+            access: "Enabled",
+            rebill: "Active",
+            rate: mail.amount,
+            group: ["$119", "$139", "$129"].includes(mail.amount || "")
+              ? "Starter"
+              : ["$179", "$199", "$135", "$189"].includes(mail.amount || "")
+              ? "Turbo"
+              : "",
+            start: new Date(mail.invoiceDate!),
+            expiry: getTrialPeriodDate(mail.invoiceDate!),
+            logs: `${mail.recivedDate} new Client`,
+            updatedAt: [new Date()],
+          });
 
-        // Create AV records
-        const avRecords = newClients.map((mail) => ({
-          subscriptionId: mail.subscriptionId,
-          avEmail: mail.email,
-          avUsername: mail.login,
-        }));
+          // Create AV records
 
-        await avModel.insertMany(removeDuplicate(avRecords));
+          avRecords.push({
+            subscriptionId: mail.subscriptionId,
+            avEmail: mail.email,
+            avUsername: mail.login,
+          });
 
-        messages.push(
-          ...newClients.map(
-            (mail) =>
-              `🎉 Trial activated for subscription ${mail.subscriptionId}`
-          )
-        );
+          messages.push(
+            `🎉 Trial activated for subscription ${mail.subscriptionId}`
+          );
+        }
+
+        if (newPayments.length > 0) {
+          await paymentModel.insertMany(removeDuplicate(newPayments));
+        }
+
+        if (avRecords.length > 0) {
+          await avModel.insertMany(removeDuplicate(avRecords));
+        }
       } catch (error) {
         return res.status(500).json({
           success: false,
