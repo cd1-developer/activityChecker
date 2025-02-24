@@ -13,7 +13,7 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
-    const usernameData = await usernameModel({ subscriptionId });
+    const usernameData = await usernameModel.findOne({ subscriptionId });
 
     if (usernameData) {
       return res.json({
