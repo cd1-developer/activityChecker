@@ -28,6 +28,7 @@ router.post("/", async (req: Request, res: Response) => {
       });
 
     avData.avEmail = newAvUsername;
+    await avData.save();
     return res.json({
       success: true,
       message: `${oldAvUsername} updated with ${newAvUsername}`,
