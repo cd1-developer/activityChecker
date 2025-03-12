@@ -30,6 +30,7 @@ import replaceSubscriptionID from "./routes/replaceSubscriptionID";
 import extendSubscription from "./routes/extendSubscription";
 import upgradeSubscription from "./routes/upgradeSubscription";
 import replaceAvUsername from "./routes/replaceAvUsername";
+import deleteUsername from "./routes/deleteUsername";
 
 dotenv.config({
   path: ".env",
@@ -88,6 +89,7 @@ connectDB()
     app.use("/api/extendSubscription", extendSubscription);
     app.use("/api/upgradeSubscription", upgradeSubscription);
     app.use("/api/replaceAvUsername", replaceAvUsername);
+    app.use("/api/deleteUsername", deleteUsername);
     // start the server
 
     app.listen(process.env.PORT, () => {
