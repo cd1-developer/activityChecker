@@ -22,6 +22,8 @@ router.post("/", async (req: Request, res: Response) => {
       dataRequest,
       teamId,
       assignTo,
+      progressStatus,
+      markDone,
     } = req.body;
 
     const newTicketInData = new ticketInModel({
@@ -40,6 +42,8 @@ router.post("/", async (req: Request, res: Response) => {
       dataRequest,
       teamId,
       assignTo,
+      progressStatus,
+      markDone,
     });
     await newTicketInData.save();
     return res.json({ success: true, message: "Ticket added successfully" });
