@@ -32,6 +32,7 @@ import upgradeSubscription from "./routes/upgradeSubscription";
 import replaceAvUsername from "./routes/replaceAvUsername";
 import deleteUsername from "./routes/deleteUsername";
 import postTicketIn from "./routes/postTicketInData";
+import getTicketInData from "./routes/getTicketInData"
 
 dotenv.config({
   path: ".env",
@@ -92,6 +93,7 @@ connectDB()
     app.use("/api/replaceAvUsername", replaceAvUsername);
     app.use("/api/deleteUsername", deleteUsername);
     app.use("/api/postTicketIn", postTicketIn);
+    app.use("/api/getTicketInData",getTicketInData)
     // start the server
 
     app.listen(process.env.PORT, () => {
