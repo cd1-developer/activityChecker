@@ -93,7 +93,7 @@ connectDB()
     app.use("/api/replaceAvUsername", replaceAvUsername);
     app.use("/api/deleteUsername", deleteUsername);
     app.use("/api/postTicketIn", postTicketIn);
-    app.use("/api/getTicketInData",getTicketInData)
+    app.use("/api/getTicketIn",getTicketInData)
     // start the server
 
     app.listen(process.env.PORT, () => {
