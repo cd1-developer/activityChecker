@@ -1,9 +1,16 @@
-POST http://localhost:8000/api/updateUsernameInAcitivityData
+GET http://localhost:8000/api/getPaymentData?subscriptionId=sub_1QsMkhKRoPF3Bj5ySvlhx3O6
 Content-Type: application/json
 Authorization: Bearer YOUR_ACCESS_TOKEN
 
 
-{ 
-"username" :"daneatstacos1",
-"updatedUsername":"daneatstacos"
-  }
+# { 
+#   "allMailData":[
+# {
+#   "mailType":"Monthly Payment",
+#   "subscriptionId":"sub_1QsMkhKRoPF3Bj5ySvlhx3O6",
+#   "expiredDate":"March 19, 2025"
+# }
+#   ]
+
+
+#   }
