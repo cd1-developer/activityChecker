@@ -14,7 +14,7 @@ router.get("/", async (req: Request, res: Response) => {
     console.error("Error fetching ticket data:", error);
     return res.status(500).json({
       success: false,
-      message: "❌ An error occurred while fetching data",
+      message: "An error occurred while fetching data",
       error: error.message,
     });
   }

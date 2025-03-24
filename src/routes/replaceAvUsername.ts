@@ -7,7 +7,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const { subscriptionId, oldAvUsername, newAvUsername } = req.body;
 
-    if (!subscriptionId || !oldAvUsername || !newAvUsername)
+    if (!subscriptionId || !newAvUsername)
       return res.json({
         success: false,
         message:
