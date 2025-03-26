@@ -33,7 +33,8 @@ import replaceAvUsername from "./routes/replaceAvUsername";
 import deleteUsername from "./routes/deleteUsername";
 import postTicketIn from "./routes/postTicketInData";
 import getTicketInData from "./routes/getTicketInData";
-import rateLimiter from "./middleware/rateLimiter";
+import addMessage from "./routes/addMessage";
+import updateTicket from "./routes/UpdateTicket";
 
 dotenv.config({
   path: ".env",
@@ -58,8 +59,6 @@ app.use(cookieParser()); // This will allow you to access cookies as req.cookies
 app.use(bodyParser.json({ limit: "50mb" }));
 
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-
-
 
 connectDB()
   .then(() => {
@@ -98,6 +97,8 @@ connectDB()
     app.use("/api/deleteUsername", deleteUsername);
     app.use("/api/postTicketIn", postTicketIn);
     app.use("/api/getTicketIn", getTicketInData);
+    app.use("/api/updateTicket", updateTicket);
+    app.use("/api/addMessage", addMessage);
     // start the server
 
     app.listen(process.env.PORT, () => {

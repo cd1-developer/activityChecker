@@ -1,4 +1,3 @@
-import { kStringMaxLength } from "buffer";
 import mongoose, { Schema, Document } from "mongoose";
 
 interface TicketIn extends Document {
@@ -11,7 +10,7 @@ interface TicketIn extends Document {
   igUsername: string;
   placement: string;
   discription: string;
-  yourMessage: string;
+  yourMessage: string[];
   supportResponse: string;
   excecutive: string;
   dataRequest: string;
@@ -31,7 +30,7 @@ const TicketSchema: Schema = new mongoose.Schema({
   igUsername: { type: String },
   placement: { type: String },
   description: { type: String },
-  yourMessage: { type: String },
+  yourMessage: { type: [String] },
   supportResponse: { type: String },
   executive: { type: String },
   dataRequest: { type: String },
