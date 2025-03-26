@@ -9,9 +9,11 @@ router.post("/", async (req: Request, res: Response) => {
   if (!ticket) {
     return res.json({ success: false, message: "Ticket not found" });
   }
-  ticket.progressStatus = progressStatus;
-  if (markDone) {
-    ticket.markDone = markDone;
+  if (ticket.progressStatus !== progressStatus) {
+    ticket.progressStatus = progressStatus;
+    if (markDone) {
+      ticket.markDone = markDone;
+    }
   }
 
   await ticket.save();
