@@ -11,6 +11,6 @@ router.post("/", async (req: Request, res: Response) => {
   }
   ticket.yourMessage = [...ticket.yourMessage, message];
   await ticket.save();
-  return res.json({ success: true, message: "Your message added" });
+  return res.json({ success: true, message: "Your message added",ticketInData:ticket });
 });
 export default router;
