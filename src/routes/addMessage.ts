@@ -13,6 +13,6 @@ router.post("/", async (req: Request, res: Response) => {
   await ticket.save();
 
   const allTicketInData = await ticketInModel.find({})
-  return res.json({ success: true, message: "Your message added",ticketInData:allTicketInData });
+  return res.json({ success: true, message: "Your message added",ticketInData:ticket });
 });
 export default router;
