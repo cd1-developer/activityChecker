@@ -50,7 +50,7 @@ router.post("/", async (req: Request, res: Response) => {
   } catch (e: any) {
     console.log(`Error in setting Ticket In Data  ${e.message}`);
     return res.json({
-      success: true,
+      success: false,
       message: "Error in setting ticket in Data",
     });
   }
