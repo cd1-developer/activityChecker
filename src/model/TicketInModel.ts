@@ -22,7 +22,7 @@ interface TicketIn extends Document {
 
 const TicketSchema: Schema = new mongoose.Schema({
   date: { type: String },
-  ticketId: { type: String },
+  TicketId: { type: String },
   status: { type: String },
   priority: { type: String },
   subscriptionId: { type: String },
