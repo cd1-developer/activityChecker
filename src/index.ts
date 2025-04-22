@@ -35,6 +35,7 @@ import postTicketIn from "./routes/postTicketInData";
 import getTicketInData from "./routes/getTicketInData";
 import addMessage from "./routes/addMessage";
 import updateTicket from "./routes/UpdateTicket";
+import changePaymentStatus from "./routes/ChangePaymentStatus";
 
 dotenv.config({
   path: ".env",
@@ -99,6 +100,8 @@ connectDB()
     app.use("/api/getTicketIn", getTicketInData);
     app.use("/api/updateTicket", updateTicket);
     app.use("/api/addMessage", addMessage);
+    app.use("/api/changePaymentStatus", changePaymentStatus);
+
     // start the server
 
     app.listen(process.env.PORT, () => {
