@@ -31,7 +31,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     avData.avEmail = newAvUsername;
     avData.logs = addLogs(
-      avData.logs,
+      avData.logs || "",
       `${formatDate(
         new Date().toString()
       )} - ${oldAvUsername} replace with ${newAvUsername}`
