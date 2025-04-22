@@ -1,5 +1,7 @@
 import { Router, Request, Response } from "express";
 import paymentModel from "../model/paymentModel";
+import addLogs from "../helper/addLogs";
+import formatDate from "../helper/formateDate";
 
 const router = Router();
 
@@ -17,6 +19,12 @@ router.post("/", async (req: Request, res: Response) => {
 
     if (paymentData) {
       paymentData.expiry = new Date(expiry);
+      paymentData.logs = addLogs(
+        paymentData.logs,
+        `${formatDate(new Date().toString())} - ${formatDate(
+          new Date(paymentData.expiry).toString()
+        )} changes to ${formatDate(new Date(expiry).toString())}`
+      );
       await paymentData.save();
       return res.json({
         success: true,

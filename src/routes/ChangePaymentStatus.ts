@@ -22,7 +22,7 @@ router.put("/", async (req: Request, res: Response) => {
     paymentInfo.rebill = rebill;
     paymentInfo.logs = addLogs(
       paymentInfo.logs,
-      `${formatDate(new Date().toString())} -payment stauts updated  ${
+      `${formatDate(new Date().toString())} -payment status updated  ${
         paymentInfo.access
       } --> ${access} ${paymentInfo.rebill} --> ${rebill}`
     );

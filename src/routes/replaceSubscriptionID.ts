@@ -1,6 +1,8 @@
 import { Router, Request, Response } from "express";
 import usernameModel from "../model/UsernameModel";
 import { Username } from "../model/UsernameModel";
+import addLogs from "../helper/addLogs";
+import formatDate from "../helper/formateDate";
 
 const router = Router();
 
@@ -18,6 +20,12 @@ router.post("/", async (req: Request, res: Response) => {
     });
     if (usernameData) {
       usernameData.subscriptionId = newSubsriptionId;
+      usernameData.logs = addLogs(
+        usernameData.logs,
+        `${formatDate(new Date().toString())} - susbcription Id replace with ${
+          usernameData.subscriptionId
+        } to ${newSubsriptionId}`
+      );
       await usernameData.save();
       return res.json({
         success: true,

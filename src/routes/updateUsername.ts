@@ -1,6 +1,8 @@
 import { Router, Response, Request } from "express";
 import trueGrowthModel from "../model/trueGrowthModel";
 import usernameModel from "../model/UsernameModel";
+import addLogs from "../helper/addLogs";
+import formatDate from "../helper/formateDate";
 
 const router = Router();
 
@@ -25,6 +27,12 @@ router.put("/", async (req: Request, res: Response) => {
       if (usernameData.username === username) {
         usernameData.username = updatedUsername;
         usernameData.updatedBy = updatedBy;
+        usernameData.logs = addLogs(
+          usernameData.logs,
+          `${formatDate(new Date().toString())} old Username ${
+            usernameData.username
+          } updated to ${updatedUsername} and Updated By ${updatedBy}`
+        );
         await usernameData.save();
         updated = true;
       }
