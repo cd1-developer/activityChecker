@@ -1,5 +1,7 @@
 import { Router, Request, Response } from "express";
 import avModel from "../model/avEmailModel";
+import addLogs from "../helper/addLogs";
+import formatDate from "../helper/formateDate";
 
 const router = Router();
 
@@ -28,6 +30,12 @@ router.post("/", async (req: Request, res: Response) => {
       });
 
     avData.avEmail = newAvUsername;
+    avData.logs = addLogs(
+      avData.logs,
+      `${formatDate(
+        new Date().toString()
+      )} - ${oldAvUsername} replace with ${newAvUsername}`
+    );
     await avData.save();
     return res.json({
       success: true,
