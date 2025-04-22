@@ -74,6 +74,7 @@ router.post("/", async (req: Request, res: Response) => {
             subscriptionId: mail.subscriptionId,
             avEmail: mail.email,
             avUsername: mail.login,
+            logs: `${mail.email} - new client`,
           });
 
           messages.push(
