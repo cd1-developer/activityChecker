@@ -28,7 +28,7 @@ router.put("/", async (req: Request, res: Response) => {
         usernameData.username = updatedUsername;
         usernameData.updatedBy = updatedBy;
         usernameData.logs = addLogs(
-          usernameData.logs,
+          usernameData.logs || "",
           `${formatDate(new Date().toString())} old Username ${
             usernameData.username
           } updated to ${updatedUsername} and Updated By ${updatedBy}`
