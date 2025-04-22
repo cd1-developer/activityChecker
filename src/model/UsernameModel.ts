@@ -4,6 +4,7 @@ export interface Username extends Document {
   subscriptionId: string;
   username: string;
   updatedBy: string;
+  logs: string;
 }
 
 const usernameSchema: Schema = new Schema({
@@ -19,6 +20,10 @@ const usernameSchema: Schema = new Schema({
   updatedBy: {
     type: String,
     default: "",
+  },
+  logs: {
+    type: String,
+    defult: "",
   },
 });
 
