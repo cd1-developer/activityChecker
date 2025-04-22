@@ -1,6 +1,9 @@
 import { Router, Request, Response } from "express";
 import paymentModel from "../model/paymentModel";
 import { Payments } from "../model/paymentModel";
+import addLogs from "../helper/addLogs";
+import { format } from "path";
+import formatDate from "../helper/formateDate";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
@@ -20,7 +23,25 @@ router.post("/", async (req: Request, res: Response) => {
       paymentData.group = group;
       if (rate) {
         paymentData.rate = rate;
+        paymentData.logs = addLogs(
+          paymentData.logs,
+          `${formatDate(
+            new Date().toString()
+          )} - Payment Info Updated ( old rate to ${
+            paymentData.rate
+          } and new rate ${rate} and old Group ${
+            paymentData.group
+          } to new group ${group} )`
+        );
       }
+      paymentData.logs = addLogs(
+        paymentData.logs,
+        `${formatDate(
+          new Date().toString()
+        )} - Payment Info Updated ( old Group ${
+          paymentData.group
+        } to new group ${group} )`
+      );
       await paymentData.save();
       return res.json({
         success: true,
