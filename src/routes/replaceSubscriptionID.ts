@@ -21,7 +21,7 @@ router.post("/", async (req: Request, res: Response) => {
     if (usernameData) {
       usernameData.subscriptionId = newSubsriptionId;
       usernameData.logs = addLogs(
-        usernameData.logs,
+        usernameData.logs || "",
         `${formatDate(new Date().toString())} - susbcription Id replace with ${
           usernameData.subscriptionId
         } to ${newSubsriptionId}`
