@@ -13,7 +13,9 @@ router.get("/", async (req: Request, res: Response) => {
         .json({ success: false, message: "Username is required" });
     }
 
-    const accountData = await AccountModel.find({ username: username as string });
+    const accountData = await AccountModel.find({
+      username: username as string,
+    });
 
     if (!accountData || accountData.length === 0) {
       return res
@@ -24,12 +26,10 @@ router.get("/", async (req: Request, res: Response) => {
     return res.status(200).json({ success: true, message: accountData });
   } catch (e: any) {
     console.log("Error fetching account data: " + e.message);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Could not retrieve data from database",
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Could not retrieve data from database",
+    });
   }
 });
 

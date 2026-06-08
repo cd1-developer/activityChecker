@@ -34,6 +34,8 @@ import getTicketInData from "./src/routes/getTicketInData";
 import addMessage from "./src/routes/addMessage";
 import updateTicket from "./src/routes/UpdateTicket";
 import changePaymentStatus from "./src/routes/ChangePaymentStatus";
+import postAvGrowth from "./src/routes/postAvGrowth";
+import getAvGrowthData from "./src/routes/getAvGrowthData";
 
 dotenv.config({
   path: ".env",
@@ -49,7 +51,11 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json());
+app.use(
+  express.json({
+    limit: "50mb",
+  }),
+);
 
 connectDB()
   .then(() => {
@@ -91,6 +97,8 @@ connectDB()
     app.use("/api/updateTicket", updateTicket);
     app.use("/api/addMessage", addMessage);
     app.use("/api/changePaymentStatus", changePaymentStatus);
+    app.use("/api/av-growth", postAvGrowth);
+    app.use("/api/getAvGrowthData", getAvGrowthData);
 
     // start the server
 

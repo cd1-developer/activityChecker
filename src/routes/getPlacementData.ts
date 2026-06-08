@@ -9,7 +9,9 @@ router.get("/", async (req: Request, res: Response) => {
 
     // If deviceId is found then return the Device Data
     if (deviceId) {
-      let device = await passwordModel.findOne({ deviceId: deviceId as string });
+      let device = await passwordModel.findOne({
+        deviceId: deviceId as string,
+      });
       if (device) {
         return res.json({ success: true, device });
       }
