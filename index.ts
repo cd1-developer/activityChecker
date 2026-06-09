@@ -43,71 +43,60 @@ dotenv.config({
 
 const app = express();
 
-// CORS configuration
 app.use(
   cors({
-    origin: "*", // Change to specific domains if needed
+    origin: "*",
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   }),
 );
-app.use(
-  express.json({
-    limit: "50mb",
-  }),
-);
+app.use(express.json({ limit: "50mb" }));
 
-connectDB()
-  .then(() => {
-    // expect response in json format
+// Ensure DB is connected before handling any request
+app.use(async (_req, _res, next) => {
+  await connectDB();
+  next();
+});
 
-    // start using routes
-    app.use("/api/postAccountData", postAccountData);
-    app.use("/api/getAccountData", getAccountData);
-    app.use("/api/postTrueGrowthData", postTrueGrowthData);
-    app.use("/api/getTruwGrowthData", getTruwGrowthData);
-    app.use("/api/deleteTrueGrowth", deleteTrueGrowth);
-    app.use("/api/deleteActivityData", deleteActivityData);
-    app.use("/api/updateUsername", updateUsername);
-    app.use(
-      "/api/updateUsernameInAcitivityData",
-      updateUsernameInAcitivityData,
-    );
-    app.use("/api/signup", signUp);
-    app.use("/api/signIn", signIn);
-    app.use("/api/userInfo", userInfo);
-    app.use("/api/logout", logout);
-    // app.use("/api/addPlacement", addPlacement);
-    app.use("/api/bookPlacement", bookPlacement);
-    app.use("/api/getPlacementData", getPlacementData);
-    app.use("/api/postPayment", postPayment);
-    app.use("/api/postAvUsername", postAvUsername);
-    app.use("/api/updatePayments", updatePayments);
-    app.use("/api/getPaymentData", getPaymentData);
-    app.use("/api/getCoreAVData", getCoreAVData);
-    app.use("/api/postUsernameData", postUsernameData);
-    app.use("/api/getUsernameData", getUsernameData);
-    app.use("/api/replaceSubscriptionID", replaceSubscriptionID);
-    app.use("/api/extendSubscription", extendSubscription);
-    app.use("/api/upgradeSubscription", upgradeSubscription);
-    app.use("/api/replaceAvUsername", replaceAvUsername);
-    app.use("/api/deleteUsername", deleteUsername);
-    app.use("/api/postTicketIn", postTicketIn);
-    app.use("/api/getTicketIn", getTicketInData);
-    app.use("/api/updateTicket", updateTicket);
-    app.use("/api/addMessage", addMessage);
-    app.use("/api/changePaymentStatus", changePaymentStatus);
-    app.use("/api/av-growth", postAvGrowth);
-    app.use("/api/getAvGrowthData", getAvGrowthData);
+app.use("/api/postAccountData", postAccountData);
+app.use("/api/getAccountData", getAccountData);
+app.use("/api/postTrueGrowthData", postTrueGrowthData);
+app.use("/api/getTruwGrowthData", getTruwGrowthData);
+app.use("/api/deleteTrueGrowth", deleteTrueGrowth);
+app.use("/api/deleteActivityData", deleteActivityData);
+app.use("/api/updateUsername", updateUsername);
+app.use("/api/updateUsernameInAcitivityData", updateUsernameInAcitivityData);
+app.use("/api/signup", signUp);
+app.use("/api/signIn", signIn);
+app.use("/api/userInfo", userInfo);
+app.use("/api/logout", logout);
+app.use("/api/bookPlacement", bookPlacement);
+app.use("/api/getPlacementData", getPlacementData);
+app.use("/api/postPayment", postPayment);
+app.use("/api/postAvUsername", postAvUsername);
+app.use("/api/updatePayments", updatePayments);
+app.use("/api/getPaymentData", getPaymentData);
+app.use("/api/getCoreAVData", getCoreAVData);
+app.use("/api/postUsernameData", postUsernameData);
+app.use("/api/getUsernameData", getUsernameData);
+app.use("/api/replaceSubscriptionID", replaceSubscriptionID);
+app.use("/api/extendSubscription", extendSubscription);
+app.use("/api/upgradeSubscription", upgradeSubscription);
+app.use("/api/replaceAvUsername", replaceAvUsername);
+app.use("/api/deleteUsername", deleteUsername);
+app.use("/api/postTicketIn", postTicketIn);
+app.use("/api/getTicketIn", getTicketInData);
+app.use("/api/updateTicket", updateTicket);
+app.use("/api/addMessage", addMessage);
+app.use("/api/changePaymentStatus", changePaymentStatus);
+app.use("/api/av-growth", postAvGrowth);
+app.use("/api/getAvGrowthData", getAvGrowthData);
 
-    // start the server
-
-    app.listen(process.env.PORT, () => {
-      console.log(
-        `Server is running at ${process.env.PORT} and Path is http://localhost:${process.env.PORT}`,
-      );
-    });
-  })
-  .catch((error) => {
-    console.log(`Error : could not able to start server ${error.message}`);
+// Local dev only
+if (process.env.NODE_ENV !== "production") {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
   });
+}
+
+export default app;
