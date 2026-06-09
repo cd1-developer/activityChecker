@@ -142,225 +142,120 @@ function getDayRange(dateStr: string): { start: Date; end: Date } {
   return { start, end };
 }
 
-// Helper: build the date match expression once — no repeated recomputation
-function buildDateMatchExpr(
-  startDate?: string,
-  endDate?: string,
-  specialStartDate?: string,
-  specialEndDate?: string,
-): Record<string, any> | null {
-  if (specialStartDate && specialEndDate) {
-    const sp1 = getDayRange(specialStartDate);
-    const sp2 = getDayRange(specialEndDate);
-    return {
-      $or: [
-        {
-          $and: [
-            { $gte: ["$$item.createdAt", sp1.start] },
-            { $lte: ["$$item.createdAt", sp1.end] },
-          ],
-        },
-        {
-          $and: [
-            { $gte: ["$$item.createdAt", sp2.start] },
-            { $lte: ["$$item.createdAt", sp2.end] },
-          ],
-        },
-      ],
-    };
-  }
-
-  if (specialStartDate) {
-    const sp = getDayRange(specialStartDate);
-    return {
-      $and: [
-        { $gte: ["$$item.createdAt", sp.start] },
-        { $lte: ["$$item.createdAt", sp.end] },
-      ],
-    };
-  }
-
-  if (specialEndDate) {
-    const sp = getDayRange(specialEndDate);
-    return {
-      $and: [
-        { $gte: ["$$item.createdAt", sp.start] },
-        { $lte: ["$$item.createdAt", sp.end] },
-      ],
-    };
-  }
-
-  if (startDate && endDate) {
-    const start = getDayRange(startDate).start;
-    const end = getDayRange(endDate).end;
-    return {
-      $and: [
-        { $gte: ["$$item.createdAt", start] },
-        { $lte: ["$$item.createdAt", end] },
-      ],
-    };
-  }
-
-  if (startDate) {
-    const { start, end } = getDayRange(startDate);
-    return {
-      $and: [
-        { $gte: ["$$item.createdAt", start] },
-        { $lte: ["$$item.createdAt", end] },
-      ],
-    };
-  }
-
-  if (endDate) {
-    const { start, end } = getDayRange(endDate);
-    return {
-      $and: [
-        { $gte: ["$$item.createdAt", start] },
-        { $lte: ["$$item.createdAt", end] },
-      ],
-    };
-  }
-
-  return null; // no date filter → fetch everything
-}
-
-// Helper: build the top-level $match stage for index usage
-function buildTopLevelMatch(
-  startDate?: string,
-  endDate?: string,
-  specialStartDate?: string,
-  specialEndDate?: string,
-): Record<string, any> {
-  if (specialStartDate && specialEndDate) {
-    const sp1 = getDayRange(specialStartDate);
-    const sp2 = getDayRange(specialEndDate);
-    return {
-      $or: [
-        { "avGrowthInfo.createdAt": { $gte: sp1.start, $lte: sp1.end } },
-        { "avGrowthInfo.createdAt": { $gte: sp2.start, $lte: sp2.end } },
-      ],
-    };
-  }
-
-  if (specialStartDate) {
-    const sp = getDayRange(specialStartDate);
-    return { "avGrowthInfo.createdAt": { $gte: sp.start, $lte: sp.end } };
-  }
-
-  if (specialEndDate) {
-    const sp = getDayRange(specialEndDate);
-    return { "avGrowthInfo.createdAt": { $gte: sp.start, $lte: sp.end } };
-  }
-
-  if (startDate && endDate) {
-    return {
-      "avGrowthInfo.createdAt": {
-        $gte: getDayRange(startDate).start,
-        $lte: getDayRange(endDate).end,
-      },
-    };
-  }
-
-  if (startDate) {
-    const { start, end } = getDayRange(startDate);
-    return { "avGrowthInfo.createdAt": { $gte: start, $lte: end } };
-  }
-
-  if (endDate) {
-    const { start, end } = getDayRange(endDate);
-    return { "avGrowthInfo.createdAt": { $gte: start, $lte: end } };
-  }
-
-  return {}; // no filter
-}
-
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const { startDate, endDate, specialStartDate, specialEndDate } =
-      req.query as Record<string, string | undefined>;
+    const { startDate, endDate, specialStartDate, specialEndDate } = req.query;
 
-    // ── 1. Compute date expressions ONCE (not inside per-item loops) ──────────
-    const topLevelMatch = buildTopLevelMatch(
-      startDate,
-      endDate,
-      specialStartDate,
-      specialEndDate,
-    );
-    const filterExpr = buildDateMatchExpr(
-      startDate,
-      endDate,
-      specialStartDate,
-      specialEndDate,
-    );
+    let dateFilter: Record<string, any> = {};
+    let filterType = "";
 
-    // ── 2. Single aggregation pipeline replaces find + populate + JS filter ───
-    const pipeline: any[] = [
-      // Stage 1: index-based pre-filter — eliminates most documents early
-      { $match: topLevelMatch },
+    if (specialStartDate && specialEndDate) {
+      // Grab data of ONLY these two exact dates (not between)
+      const sp1 = getDayRange(specialStartDate as string);
+      const sp2 = getDayRange(specialEndDate as string);
 
-      // Stage 2: filter avGrowthInfo array inside MongoDB (no JS re-filtering)
-      {
-        $addFields: {
-          avGrowthInfo: filterExpr
-            ? {
-                $filter: {
-                  input: "$avGrowthInfo",
-                  as: "item",
-                  cond: filterExpr,
-                },
-              }
-            : "$avGrowthInfo",
-        },
-      },
+      dateFilter = {
+        $or: [
+          { "avGrowthInfo.createdAt": { $gte: sp1.start, $lte: sp1.end } },
+          { "avGrowthInfo.createdAt": { $gte: sp2.start, $lte: sp2.end } },
+        ],
+      };
+      filterType = "specialBoth";
+    } else if (specialStartDate) {
+      // Grab data of only this exact date
+      const sp = getDayRange(specialStartDate as string);
+      dateFilter = {
+        "avGrowthInfo.createdAt": { $gte: sp.start, $lte: sp.end },
+      };
+      filterType = "specialStart";
+    } else if (specialEndDate) {
+      // Grab data of only this exact date
+      const sp = getDayRange(specialEndDate as string);
+      dateFilter = {
+        "avGrowthInfo.createdAt": { $gte: sp.start, $lte: sp.end },
+      };
+      filterType = "specialEnd";
+    } else if (startDate && endDate) {
+      // Grab all data between these two dates
+      const start = getDayRange(startDate as string).start;
+      const end = getDayRange(endDate as string).end;
+      dateFilter = {
+        "avGrowthInfo.createdAt": { $gte: start, $lte: end },
+      };
+      filterType = "range";
+    } else if (startDate) {
+      // Grab all data of only this exact date
+      const { start, end } = getDayRange(startDate as string);
+      dateFilter = {
+        "avGrowthInfo.createdAt": { $gte: start, $lte: end },
+      };
+      filterType = "startOnly";
+    } else if (endDate) {
+      // Grab all data of only this exact date
+      const { start, end } = getDayRange(endDate as string);
+      dateFilter = {
+        "avGrowthInfo.createdAt": { $gte: start, $lte: end },
+      };
+      filterType = "endOnly";
+    }
+    // No dates: fetch everything
 
-      // Stage 3: drop documents where no array items survived the filter
-      { $match: { "avGrowthInfo.0": { $exists: true } } },
+    const documents = await avGrowthModel
+      .find(dateFilter)
+      .populate("usernameId", "username");
 
-      // Stage 4: $lookup replaces .populate() — single batched join, not N queries
-      {
-        $lookup: {
-          from: "usernames", // ← your actual collection name
-          localField: "usernameId",
-          foreignField: "_id",
-          as: "usernameData",
-        },
-      },
+    const data = documents.map((doc: any) => {
+      const username = doc.usernameId?.username || "";
 
-      // Stage 5: flatten the lookup array to a single field
-      {
-        $addFields: {
-          username: { $arrayElemAt: ["$usernameData.username", 0] },
-        },
-      },
+      const filteredAvGrowthInfo = doc.avGrowthInfo
+        .filter((item: any) => {
+          const createdAt = item.createdAt ? new Date(item.createdAt) : null;
+          if (!createdAt) return true;
 
-      // Stage 6: inject username into every avGrowthInfo item
-      {
-        $addFields: {
-          avGrowthInfo: {
-            $map: {
-              input: "$avGrowthInfo",
-              as: "item",
-              in: { $mergeObjects: ["$$item", { username: "$username" }] },
-            },
-          },
-        },
-      },
+          if (filterType === "specialBoth") {
+            const sp1 = getDayRange(specialStartDate as string);
+            const sp2 = getDayRange(specialEndDate as string);
+            return (
+              (createdAt >= sp1.start && createdAt <= sp1.end) ||
+              (createdAt >= sp2.start && createdAt <= sp2.end)
+            );
+          } else if (filterType === "specialStart") {
+            const sp = getDayRange(specialStartDate as string);
+            return createdAt >= sp.start && createdAt <= sp.end;
+          } else if (filterType === "specialEnd") {
+            const sp = getDayRange(specialEndDate as string);
+            return createdAt >= sp.start && createdAt <= sp.end;
+          } else if (filterType === "range") {
+            const start = getDayRange(startDate as string).start;
+            const end = getDayRange(endDate as string).end;
+            return createdAt >= start && createdAt <= end;
+          } else if (filterType === "startOnly") {
+            const { start, end } = getDayRange(startDate as string);
+            return createdAt >= start && createdAt <= end;
+          } else if (filterType === "endOnly") {
+            const { start, end } = getDayRange(endDate as string);
+            return createdAt >= start && createdAt <= end;
+          }
 
-      // Stage 7: clean up temporary fields from the response
-      {
-        $project: {
-          usernameData: 0,
-          username: 0,
-        },
-      },
-    ];
+          return true; // no filter → return everything
+        })
+        .map((item: any) => ({
+          ...item.toObject(),
+          username,
+        }));
 
-    const data = await avGrowthModel.aggregate(pipeline);
+      return {
+        _id: doc._id,
+        avGrowthInfo: filteredAvGrowthInfo,
+      };
+    });
+
+    const filteredData = data.filter((doc) => doc.avGrowthInfo.length > 0);
 
     return res.status(200).json({
       success: true,
-      count: data.length,
-      data,
+      count: filteredData.length,
+      data: filteredData,
     });
   } catch (error) {
     console.error("Error fetching AV Growth:", error);
