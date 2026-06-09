@@ -16,44 +16,32 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
+    // ── 1. Resolve usernames → ObjectIds (single query) ──────────────────────
     const usernames = Array.from(new Set(rows.map((row) => row.username)));
 
-    const usernameDocs = await usernameModel.find({
-      username: { $in: usernames },
-    });
+    const usernameDocs = await usernameModel
+      .find({ username: { $in: usernames } }, { _id: 1, username: 1 })
+      .lean(); // lean() skips Mongoose hydration overhead
 
-    const usernameMap = new Map();
-    usernameDocs.forEach((doc) => {
-      usernameMap.set(doc.username, doc._id);
-    });
+    const usernameMap = new Map<string, any>();
+    usernameDocs.forEach((doc) => usernameMap.set(doc.username, doc._id));
 
-    // Get today's date range
-    const todayStart = new Date();
-    todayStart.setUTCHours(0, 0, 0, 0);
-
-    const todayEnd = new Date();
-    todayEnd.setUTCHours(23, 59, 59, 999);
-
-    const grouped: Record<string, any> = {};
+    // ── 2. Group rows by usernameId (in-memory) ───────────────────────────────
+    const grouped = new Map<string, { usernameId: any; avGrowthInfo: any[] }>();
 
     for (const row of rows) {
       const usernameId = usernameMap.get(row.username);
-
       if (!usernameId) {
         console.warn(`Username not found: ${row.username}`);
         continue;
       }
 
       const key = usernameId.toString();
-
-      if (!grouped[key]) {
-        grouped[key] = {
-          usernameId,
-          avGrowthInfo: [],
-        };
+      if (!grouped.has(key)) {
+        grouped.set(key, { usernameId, avGrowthInfo: [] });
       }
 
-      grouped[key].avGrowthInfo.push({
+      grouped.get(key)!.avGrowthInfo.push({
         subId: row.subId,
         placement: row.placement,
         status: row.status,
@@ -67,47 +55,80 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
-    let skippedUsers = 0;
-    let syncedUsers = 0;
-
-    for (const doc of Object.values(grouped) as any[]) {
-      // Check if this user already has data saved today
-      const existingDoc = await avGrowthModel.findOne({
-        usernameId: doc.usernameId,
-        "avGrowthInfo.createdAt": {
-          $gte: todayStart,
-          $lte: todayEnd,
-        },
+    if (grouped.size === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No valid users to sync",
+        syncedUsers: 0,
+        skippedUsers: rows.length,
       });
+    }
 
-      if (existingDoc) {
-        // Already has today's data — skip to avoid duplicates
+    // ── 3. Single query to find ALL users that already have today's data ──────
+    const todayStart = new Date();
+    todayStart.setUTCHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setUTCHours(23, 59, 59, 999);
+
+    const allUsernameIds = Array.from(grouped.values()).map(
+      (g) => g.usernameId,
+    );
+
+    const alreadySyncedDocs = await avGrowthModel
+      .find(
+        {
+          usernameId: { $in: allUsernameIds },
+          "avGrowthInfo.createdAt": { $gte: todayStart, $lte: todayEnd },
+        },
+        { usernameId: 1 }, // project only what we need
+      )
+      .lean();
+
+    const alreadySyncedSet = new Set(
+      alreadySyncedDocs.map((doc) => doc.usernameId.toString()),
+    );
+
+    // ── 4. Build bulkWrite operations for all non-duplicate users ─────────────
+    const bulkOps: any[] = [];
+    let skippedUsers = 0;
+
+    for (const [key, doc] of grouped) {
+      if (alreadySyncedSet.has(key)) {
         console.warn(`Skipping duplicate for usernameId: ${doc.usernameId}`);
         skippedUsers++;
         continue;
       }
 
-      // No data for today — safe to push
-      await avGrowthModel.updateOne(
-        { usernameId: doc.usernameId },
-        {
-          $push: {
-            avGrowthInfo: {
-              $each: doc.avGrowthInfo,
+      bulkOps.push({
+        updateOne: {
+          filter: { usernameId: doc.usernameId },
+          update: {
+            $push: {
+              avGrowthInfo: { $each: doc.avGrowthInfo },
             },
           },
+          upsert: true,
         },
-        { upsert: true },
-      );
+      });
+    }
 
-      syncedUsers++;
+    // ── 5. Execute all writes in a single round-trip ──────────────────────────
+    let syncedUsers = 0;
+
+    if (bulkOps.length > 0) {
+      const result = await avGrowthModel.bulkWrite(bulkOps, {
+        ordered: false, // parallel execution; don't stop on first error
+      });
+
+      syncedUsers = result.upsertedCount + result.modifiedCount;
     }
 
     return res.status(200).json({
       success: true,
       message: "Av Growth synced successfully",
       syncedUsers,
-      skippedUsers, // tells you how many were skipped due to duplicate
+      skippedUsers,
     });
   } catch (error) {
     console.error("Error syncing Av Growth:", error);
