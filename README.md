@@ -1,24 +1,15 @@
-# Account Management API
+# activitychecker_
 
-This is a simple RESTful API built using Node.js, Express, and MongoDB, which allows you to post and retrieve account data. The API has two endpoints: one for posting account data and another for retrieving it. The app uses `dotenv` for managing environment variables, and connects to MongoDB to store and retrieve data.
+To install dependencies:
 
-## Getting Started
+```bash
+bun install
+```
 
-### Prerequisites
+To run:
 
-Before you can run this project, ensure that you have the following installed:
+```bash
+bun run index.ts
+```
 
-- [Node.js](https://nodejs.org/)
-- [MongoDB](https://www.mongodb.com/)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-
-### Project Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/cd1-developer/activityChecker.git
-
-   ```
-
-
+This project was created using `bun init` in bun v1.3.5. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.

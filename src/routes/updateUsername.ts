@@ -1,4 +1,4 @@
-import { Router, Response, Request } from "express";
+import { Router, type Response, type Request } from "express";
 import trueGrowthModel from "../model/trueGrowthModel";
 import usernameModel from "../model/UsernameModel";
 import addLogs from "../helper/addLogs";

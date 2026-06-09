@@ -1,8 +1,7 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import paymentModel from "../model/paymentModel";
-import { Payments } from "../model/paymentModel";
+import { type Payments } from "../model/paymentModel";
 import addLogs from "../helper/addLogs";
-import { format } from "path";
 import formatDate from "../helper/formateDate";
 const router = Router();
 
@@ -15,7 +14,7 @@ router.post("/", async (req: Request, res: Response) => {
         success: false,
         message: "Please provide both subscriptionId and group",
       });
-    const paymentData: Payments = await paymentModel.findOne({
+    const paymentData = await paymentModel.findOne({
       subscriptionId,
     });
 

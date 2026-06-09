@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import bcryptjs from "bcryptjs"
 import userModel from "../model/UserModel";
 import jwt from "jsonwebtoken"
@@ -23,7 +23,7 @@ const tokenData = {
     id:user._id,
     email:user.email
 }
-const token = await jwt.sign(tokenData,process.env.JWT_CODE,{expiresIn:"1d"})
+const token = await jwt.sign(tokenData, process.env.JWT_CODE!, {expiresIn:"1d"})
 
 res.cookie("token",token,{
     httpOnly:true

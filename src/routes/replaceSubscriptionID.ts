@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import usernameModel from "../model/UsernameModel";
-import { Username } from "../model/UsernameModel";
+import { type Username } from "../model/UsernameModel";
 import addLogs from "../helper/addLogs";
 import formatDate from "../helper/formateDate";
 
@@ -15,7 +15,7 @@ router.post("/", async (req: Request, res: Response) => {
         message: "New and old Subscription Id are requried",
       });
     }
-    const usernameData: Username = await usernameModel.findOne({
+    const usernameData = await usernameModel.findOne({
       subscriptionId: oldSubscriptionId,
     });
     if (usernameData) {

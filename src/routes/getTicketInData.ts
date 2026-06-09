@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import ticketInModel from "../model/TicketInModel";
 const router = Router();
 
@@ -10,7 +10,7 @@ router.get("/", async (req: Request, res: Response) => {
       message: "Data retrieved successfully",
       ticketInData,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching ticket data:", error);
     return res.status(500).json({
       success: false,

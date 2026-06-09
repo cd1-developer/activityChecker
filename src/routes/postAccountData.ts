@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import AccountModel from "../model/accountModel";
 
 const router = Router();
@@ -71,7 +71,7 @@ router.post("/", async (req: Request, res: Response) => {
         .status(200)
         .json({ success: true, message: "Data updated successfully" });
     }
-  } catch (e) {
+  } catch (e: any) {
     console.log("Could not send data to database: " + e.message);
     return res.status(500).json({
       success: false,

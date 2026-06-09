@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import trueGrowthModel from "../model/trueGrowthModel";
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import paymentModel from "../model/paymentModel";
 import avModel from "../model/avEmailModel";
 import getTrialPeriodDate from "../helper/getTrialPeriod";

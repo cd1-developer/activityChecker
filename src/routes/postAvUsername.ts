@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import avModel from "../model/avEmailModel";
-import { coreAVUsername } from "../model/avEmailModel";
+import { type coreAVUsername } from "../model/avEmailModel";
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
@@ -18,7 +18,7 @@ router.post("/", async (req: Request, res: Response) => {
       );
 
       // interting data in AvEmail in Database
-      const result = await avModel.insertMany(allAvUsernameData);
+      await avModel.insertMany(allAvUsernameData);
 
       return res.json({
         success: true,

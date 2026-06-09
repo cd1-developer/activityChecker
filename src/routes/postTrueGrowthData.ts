@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import trueGrowthModel from "../model/trueGrowthModel";
 
 const router = Router();
@@ -87,7 +87,7 @@ router.post("/", async (req: Request, res: Response) => {
         .status(200)
         .json({ success: true, message: "true Growth updated successfully" });
     }
-  } catch (e) {
+  } catch (e: any) {
     console.log("Could not send true Growth to database: " + e.message);
     return res.status(500).json({
       success: false,

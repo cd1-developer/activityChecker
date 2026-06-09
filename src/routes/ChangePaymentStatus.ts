@@ -1,7 +1,7 @@
 import addLogs from "../helper/addLogs";
 import formatDate from "../helper/formateDate";
 import paymentModel from "../model/paymentModel";
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 
 const router = Router();
 

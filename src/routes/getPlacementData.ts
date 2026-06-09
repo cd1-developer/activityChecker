@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import passwordModel from "../model/passwordModel";
 
 const router = Router();
@@ -9,7 +9,9 @@ router.get("/", async (req: Request, res: Response) => {
 
     // If deviceId is found then return the Device Data
     if (deviceId) {
-      let device = await passwordModel.findOne({ deviceId });
+      let device = await passwordModel.findOne({
+        deviceId: deviceId as string,
+      });
       if (device) {
         return res.json({ success: true, device });
       }

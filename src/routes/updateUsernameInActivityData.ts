@@ -1,4 +1,4 @@
-import { Router, Response, Request } from "express";
+import { Router, type Response, type Request } from "express";
 import AccountModel from "../model/accountModel";
 
 const router = Router();

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, type Request, type Response } from "express";
 import userModel from "../model/UserModel";
 import jwt from "jsonwebtoken"
 
@@ -10,7 +10,7 @@ const token = req.cookies.token;
 if(token === ""){
     return res.json({sucess:false,message:"Please Login First"})
 }
-const decodeToken = jwt.verify(token,process.env.JWT_CODE);
+const decodeToken = jwt.verify(token, process.env.JWT_CODE!) as { id: string };
 if(decodeToken.id){
 const user = await userModel.findOne({_id:decodeToken.id}).select("-password")
 if(!user){
